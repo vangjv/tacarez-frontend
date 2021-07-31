@@ -138,7 +138,7 @@ export class EsriMapComponent implements OnInit {
       view:mapView,
       layerInfos: [
         {
-          layer: geojsonLayer,
+          layer: (geojsonLayer as unknown as FeatureLayer),
           fieldConfig: [
             fieldConfigName,
             fieldConfigAddress,
