@@ -5,5 +5,5 @@
 }
 /* https://github.com/Esri/angular-cli-esri-map/issues/66 */
 .esri-view {
-  height: calc(100vh - 10px); 
+  height: calc(100vh - 50px); 
 }

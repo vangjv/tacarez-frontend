@@ -1,0 +1,19 @@
+<div class="wrapper" [ngClass]="{'menu-layout-overlay':isOverlay(),
+                                'menu-layout-static':isStatic(),
+                                'layout-light':app.lightMenu,
+                                'sidebar-inactive-l':menuInactiveDesktop,
+                                'sidebar-active-m':menuActiveMobile,
+                                'p-ripple-disabled': !app.ripple, 'p-input-filled': app.inputStyle === 'filled'}">
+    <app-topbar></app-topbar>
+
+    <div class="sidebar" (click)="onMenuClick()">
+        <div class="sidebar-scroll-content">
+            <app-menu></app-menu>
+        </div>
+    </div>
+    <div class="main">
+        <router-outlet></router-outlet>
+    </div>
+
+    <!-- <app-config></app-config> -->
+</div>

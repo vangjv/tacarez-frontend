@@ -10,7 +10,8 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~12.1.0",
+    "@angular/animations": "^12.1.4",
+    "@angular/cdk": "^12.1.4",
     "@angular/common": "~12.1.0",
     "@angular/compiler": "~12.1.0",
     "@angular/core": "~12.1.0",
@@ -22,6 +23,9 @@
     "@terraformer/arcgis": "^2.1.0",
     "@types/arcgis-js-api": "^4.20.1",
     "esri-loader": "^2.16.0",
+    "primeflex": "^3.0.1",
+    "primeicons": "^4.1.0",
+    "primeng": "^12.0.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.2.0",
     "zone.js": "~0.11.4"
