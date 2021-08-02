@@ -7,9 +7,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <!-- <link rel="stylesheet" href="https://js.arcgis.com/4.20/esri/themes/light/main.css"> -->
+  <link id="theme-css" rel="stylesheet" type="text/css" href="assets/theme/theme-blue.css">
+  <link id="layout-css" rel="stylesheet" type="text/css" href="assets/layout/css/layout-light.css">
 </head>
 <body>
-  <app-root></app-root>
+  <app-root>
+    <div class="splash-screen">
+      <div class="splash-wrapper">
+          <div class="splash-logo" style="color: white;font-size: x-large;">Make it TacarEZ</div>
+          <div class="splash-loading"><img src="assets/layout/images/dots.svg"></div>
+      </div>
+    </div>
+  </app-root>
   <div id="viewDiv">
     <div
          id="export"
