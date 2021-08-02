@@ -24,6 +24,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { BreadcrumbService } from './app.breadcrumb.service';
 import { HomeComponent } from './features/home/home.component';
 import { NewFeatureComponent } from './features/new-feature/new-feature.component';
+import { MyFeaturesComponent } from './features/my-features/my-features.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { NewFeatureComponent } from './features/new-feature/new-feature.componen
     AppMenuComponent,
     AppMenuitemComponent,
     HomeComponent,
-    NewFeatureComponent
+    NewFeatureComponent,
+    MyFeaturesComponent
   ],
   imports: [
     BrowserModule,
