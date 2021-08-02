@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MyFeatures } from 'src/app/models/myfeatures.model';
 
 @Component({
   selector: 'app-my-features',
@@ -6,10 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./my-features.component.scss']
 })
 export class MyFeaturesComponent implements OnInit {
+  myfeat:MyFeatures[];
 
   constructor() { }
 
   ngOnInit(): void {
+    
   }
 
 }

@@ -2,6 +2,51 @@
     <div class="col-12 md:col-6 lg:col-9 mx-auto">
         <div>
             <h1>My features</h1>
+
+
+
+
+            
+            <p-table [value]="myfeat">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Last Modified</th>
+                        <th>Actions</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-ft>
+                    <tr>
+                        <td>{{ft.Name}}</td>
+                        <td>{{ft.Description}}</td>
+                        <td>{{ft.lastModifiedDate}}</td>
+                        <td>
+
+                            <button icon="pi pi-pencil" label="Edit" styleClass="p-mr-2 p-button-info"></button>
+                            <button icon="pi pi-trash" label="Delete" styleClass="p-button-secondary"></button>
+
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         </div>
     </div>
 </div>
