@@ -8,6 +8,8 @@ import * as typeCreator from '@arcgis/core/renderers/smartMapping/creators/type'
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import FieldConfig from '@arcgis/core/widgets/FeatureForm/FieldConfig';
 import Renderer from '@arcgis/core/renderers/Renderer';
+import Sketch from "@arcgis/core/widgets/Sketch";
+import LayerList from '@arcgis/core/widgets/LayerList';
 
 @Component({
   selector: 'app-esri-map',
@@ -149,6 +151,29 @@ export class EsriMapComponent implements OnInit {
       ]
     });
     mapView.ui.add(editor, "top-right");
+
+    const sketch:Sketch = new Sketch({
+      view: mapView,
+      layer: geojsonLayer,
+      creationMode: "update"
+    });
+    mapView.ui.add(sketch, "bottom-left");
+
+    const layerList = new LayerList({
+      view: mapView,
+      listItemCreatedFunction: function(event) {
+        const item = event.item;
+        if (item.layer.type != "group") {
+          // don't show legend twice
+          item.panel = {
+            content: "legend",
+            open: true
+          };
+        }
+      }
+    });
+    mapView.ui.add(layerList, "bottom-right");
+
 
     mapView.when(() => {
       const typeParams = {
