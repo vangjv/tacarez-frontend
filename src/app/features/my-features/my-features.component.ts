@@ -9,9 +9,10 @@ import { ConfirmationService, ConfirmEventType, MessageService } from 'primeng/a
   styleUrls: ['./my-features.component.scss']
 })
 export class MyFeaturesComponent implements OnInit {
-  showReviewersModal: boolean = false;
+
   displayModal: boolean;
 
+  // [(visible)]="display" 
   display: boolean = false;
 
   showDialog() {
@@ -41,7 +42,7 @@ export class MyFeaturesComponent implements OnInit {
 
   ]
 
-// modal data
+// Stakeholder/Reviewer modal data
   reviewerData = [
     {
       name: 'James Bond',
@@ -55,56 +56,82 @@ export class MyFeaturesComponent implements OnInit {
       name: 'Bruce Wayne',
       email: 'bruce@gmail.com'
     },
+    {
+      name: 'Tony Stark',
+      email: 't.stark@gmail.com'
+    },
+    {
+      name: 'James Bond',
+      email: 'james.bond@gmail.com'
+    },
+    {
+      name: 'Professor Xavier',
+      email: 'prof.x@gmail.com'
+    },
+    {
+      name: 'Bruce Wayne',
+      email: 'bruce@gmail.com'
+    },
+    {
+      name: 'Tony Stark',
+      email: 't.stark@gmail.com'
+    },
 
+
+    {
+      name: 'James Bond',
+      email: 'james.bond@gmail.com'
+    },
+    {
+      name: 'Professor Xavier',
+      email: 'prof.x@gmail.com'
+    },
+    {
+      name: 'Bruce Wayne',
+      email: 'bruce@gmail.com'
+    },
+    {
+      name: 'Tony Stark',
+      email: 't.stark@gmail.com'
+    },
+    {
+      name: 'James Bond',
+      email: 'james.bond@gmail.com'
+    },
+    {
+      name: 'Professor Xavier',
+      email: 'prof.x@gmail.com'
+    },
+    {
+      name: 'Bruce Wayne',
+      email: 'bruce@gmail.com'
+    },
+    {
+      name: 'Tony Stark',
+      email: 't.stark@gmail.com'
+    },
   ]
 
-
-
   constructor(
-    private ConfirmationService: ConfirmationService, 
-    private messageServices: MessageService
+    private confirmationService: ConfirmationService, 
+    private messageService: MessageService
   ) { }
 
   ngOnInit(): void {
   }
 
-  // show Modal
-  showReviewModal(){
-    this.showReviewersModal = true;   
-  }
+  // // show Modal
+  // showReviewModal(){
+  //   this.showReviewersModal = true;   
+  // }
 
-  //Close out of Modal
-  closeReviewersModal(){
-    this.showReviewersModal = false;
-  }
-
-
-  //pop up to confirm add//
-  confirmAdd(){
-    this.ConfirmationService.confirm({
-      message: 'Are you sure that you want to add?',
-      header: 'Confirmation',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.messageServices.add({severity: 'info', summary:'Confirmed', detail:'You have accepted'});
-      },
-      reject: (type) => {
-        switch(type) {
-          case ConfirmEventType.REJECT:
-            this.messageServices.add({severity:'error', summary:'Rejected', detail:'You have rejected'});
-          break;
-          case ConfirmEventType.CANCEL:
-              this.messageServices.add({severity:'warn', summary:'Cancelled', detail:'You have cancelled'});
-          break;
-        }
-      }
-
-    });
-  }
-
+  // //Close out of Modal
+  // closeReviewersModal(){
+  //   this.showReviewersModal = false;
+  // }
 
   showModalDialog() {
     this.displayModal = true;
-}
+  }
 
 }

@@ -1,4 +1,4 @@
-<div class="grid mt-5">
+<div class="mt-5">
     <div class="col-12 md:col-6 lg:col-9 mx-auto">
         <div>
             <h1>My features</h1>
@@ -38,68 +38,59 @@
 </div>
 
 
-<div class="grid mt-5">
-    <div class="col-12 md:col-6 lg:col-9 mx-auto">
-        <div>
-            <h1>Stakeholders/Reviewers (Will be a modal)</h1>
-
-            <p-table [value]="reviewerData">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Actions</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-rev>
-                    <tr>
-                        <td>{{rev.name}}</td>
-                        <td>{{rev.email}}</td>
-                        <td>
-                            <button pButton pRipple type="button" icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-raised p-button-danger"></button> &nbsp;
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
-
-        </div>
-
-
-        <div class="p-5">
-            <div class="row flex">
-                <div class="col-5 pr-3">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
-                        <input type="text" pInputText placeholder="Username" [style]="{'width':'100%'}">         
-                    </div>
-                </div>
-            
-                <div class="col-5 pl-3">
-                    <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
-                        <input type="text" pInputText placeholder="Price" [style]="{'width':'100%'}">       
-                    </div>
-                </div>
-
-                <div class="col-2 text-right pl-3">
-                    <button pButton type="button" label="Add" [style]="{'width':'100%'}"></button> 
-                </div>
-            </div>
-            <div class="row text-right p-2">
-                <button pButton type="button" label="Close" [style]="{'width':'20%'}"></button>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <!-------Add modal------->
-<p-dialog [(visible)]="display">
-    <ng-template pTemplate="header">
-        Header content here
-    </ng-template>
-    Content
-    <p-footer>
-        //buttons
-    </p-footer>
+<p-dialog [(visible)]="display" [breakpoints]="{'960px': '75vw', '640px': '100vw'}"
+[closeOnEscape]="true" [transitionOptions]="'100ms'" [resizable]="false" 
+[style]="{width: '50vw'}" [baseZIndex]="10000" [maximizable]="true" header="Stakeholders/Reviewers" scrollHeight="flex"
+>
+        <p-table [value]="reviewerData" [scrollable]="true" scrollHeight="250px">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rev>
+                <tr>
+                    <td>{{rev.name}}</td>
+                    <td>{{rev.email}}</td>
+                    <td>
+                        <span class="text-right ml-5">
+                            <button pButton pRipple type="button" icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-raised p-button-danger"></button> &nbsp;
+                        </span>
+                        </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+        <div class="row flex">
+            <div class="col pr-3">
+                <div class="p-inputgroup mt-1">
+                    <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+                    <input type="text" pInputText placeholder="Username" [style]="{width:'100%'}">         
+                </div>
+            </div>
+        
+            <div class="col pl-3">
+                <div class="p-inputgroup mt-1">
+                    <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+                    <input type="text" pInputText placeholder="Price" [style]="{width:'100%'}">       
+                </div>
+            </div>
+
+            <div class="col-2 text-right pl-3">
+                <button pButton type="button" label="Add" [style]="{width:'100%'}"></button> 
+            </div>
+        </div>
+        <div class="row text-right p-1">
+            <div class="col">
+                <button pButton type="button" (click)="display=false" label="Close" [style]="{width:'40%'}"></button>
+            </div>
+        </div>
+
+
+
+
 </p-dialog>
