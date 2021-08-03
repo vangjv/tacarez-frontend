@@ -8,7 +8,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Description</th>
-                        <th>Last Modified</th>
+                        <th style="width: 15%;">Last Modified</th>
                         <th>Actions</th>
                     </tr>
                 </ng-template>
@@ -17,17 +17,28 @@
                         <td>{{ft.name}}</td>
                         <td>{{ft.description}}</td>
                         <td>{{ft.lastdatemodified}}</td>
-                        <td>
-                            <button pButton pRipple type="button" icon="pi pi-search" class="p-button-rounded p-button-outlined p-button-raised"></button> &nbsp;
-                            <button pButton pRipple type="button" icon="pi pi-user-plus" class="p-button-rounded p-button-outlined p-button-raised"></button> &nbsp;
-
-                            <button pButton pRipple type="button" icon="fa fa-code-fork" class="p-button-rounded p-button-outlined p-button-raised"></button>
-                                <i class="pi p-mr-4" pBadge style="font-size: 2rem" value="2"></i> &nbsp;
-
-                            <button pButton pRipple type="button" icon="pi pi-users" class="p-button-rounded p-button-outlined p-button-raised" (click)="showDialog()" ></button> &nbsp;
-
-
-                            <button pButton pRipple type="button" icon="pi pi-share-alt" class="p-button-rounded p-button-outlined p-button-raised"></button>
+                        <td style="text-align: center;">
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-search" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Open/View" tooltipPosition="top"></button>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-user-plus" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Contributors" tooltipPosition="top"></button>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-code-branch" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Merge Request" tooltipPosition="top"></button>
+                                    <i class="pi p-mr-4" pBadge style="font-size: 2rem" value="2"></i>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-users" 
+                                class="p-button-rounded p-button-outlined p-button-raised" (click)="showDialog()" pTooltip="Stakeholders & Reviewers" tooltipPosition="top"></button>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-share-alt" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Share" tooltipPosition="top"></button>
+                            </span>
                         </td>
                     </tr>
                 </ng-template>
@@ -58,7 +69,9 @@
                     <td>{{rev.email}}</td>
                     <td>
                         <span class="text-right ml-5">
-                            <button pButton pRipple type="button" icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-raised p-button-danger"></button> &nbsp;
+                            <button pButton pRipple type="button" icon="pi pi-trash"
+                             class="p-button-rounded p-button-outlined p-button-raised p-button-danger">
+                            </button>
                         </span>
                         </td>
                 </tr>

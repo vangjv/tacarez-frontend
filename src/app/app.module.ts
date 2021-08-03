@@ -30,6 +30,7 @@ import {BadgeModule} from 'primeng/badge';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {DialogModule} from 'primeng/dialog';
+import {TooltipModule} from 'primeng/tooltip';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import {DialogModule} from 'primeng/dialog';
     BadgeModule,
     ConfirmDialogModule,
     DialogModule,
+    TooltipModule
   ],
   providers: [
     // {provide: LocationStrategy, useClass: HashLocationStrategy},

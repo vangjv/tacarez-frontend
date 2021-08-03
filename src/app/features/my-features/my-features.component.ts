@@ -75,41 +75,7 @@ export class MyFeaturesComponent implements OnInit {
     {
       name: 'Tony Stark',
       email: 't.stark@gmail.com'
-    },
-
-
-    {
-      name: 'James Bond',
-      email: 'james.bond@gmail.com'
-    },
-    {
-      name: 'Professor Xavier',
-      email: 'prof.x@gmail.com'
-    },
-    {
-      name: 'Bruce Wayne',
-      email: 'bruce@gmail.com'
-    },
-    {
-      name: 'Tony Stark',
-      email: 't.stark@gmail.com'
-    },
-    {
-      name: 'James Bond',
-      email: 'james.bond@gmail.com'
-    },
-    {
-      name: 'Professor Xavier',
-      email: 'prof.x@gmail.com'
-    },
-    {
-      name: 'Bruce Wayne',
-      email: 'bruce@gmail.com'
-    },
-    {
-      name: 'Tony Stark',
-      email: 't.stark@gmail.com'
-    },
+    }
   ]
 
   constructor(
@@ -120,15 +86,6 @@ export class MyFeaturesComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  // // show Modal
-  // showReviewModal(){
-  //   this.showReviewersModal = true;   
-  // }
-
-  // //Close out of Modal
-  // closeReviewersModal(){
-  //   this.showReviewersModal = false;
-  // }
 
   showModalDialog() {
     this.displayModal = true;
