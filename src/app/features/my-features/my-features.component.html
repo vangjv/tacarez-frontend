@@ -3,11 +3,7 @@
         <div>
             <h1>My features</h1>
 
-
-
-
-            
-            <p-table [value]="myfeat">
+            <p-table [value]="myFeat">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Name</th>
@@ -18,35 +14,92 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-ft>
                     <tr>
-                        <td>{{ft.Name}}</td>
-                        <td>{{ft.Description}}</td>
-                        <td>{{ft.lastModifiedDate}}</td>
+                        <td>{{ft.name}}</td>
+                        <td>{{ft.description}}</td>
+                        <td>{{ft.lastdatemodified}}</td>
                         <td>
+                            <button pButton pRipple type="button" icon="pi pi-search" class="p-button-rounded p-button-outlined p-button-raised"></button> &nbsp;
+                            <button pButton pRipple type="button" icon="pi pi-user-plus" class="p-button-rounded p-button-outlined p-button-raised"></button> &nbsp;
 
-                            <button icon="pi pi-pencil" label="Edit" styleClass="p-mr-2 p-button-info"></button>
-                            <button icon="pi pi-trash" label="Delete" styleClass="p-button-secondary"></button>
+                            <button pButton pRipple type="button" icon="fa fa-code-fork" class="p-button-rounded p-button-outlined p-button-raised"></button>
+                                <i class="pi p-mr-4" pBadge style="font-size: 2rem" value="2"></i> &nbsp;
 
+                            <button pButton pRipple type="button" icon="pi pi-users" class="p-button-rounded p-button-outlined p-button-raised" (click)="showDialog()" ></button> &nbsp;
+
+
+                            <button pButton pRipple type="button" icon="pi pi-share-alt" class="p-button-rounded p-button-outlined p-button-raised"></button>
                         </td>
                     </tr>
                 </ng-template>
             </p-table>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
     </div>
 </div>
+
+
+<div class="grid mt-5">
+    <div class="col-12 md:col-6 lg:col-9 mx-auto">
+        <div>
+            <h1>Stakeholders/Reviewers (Will be a modal)</h1>
+
+            <p-table [value]="reviewerData">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rev>
+                    <tr>
+                        <td>{{rev.name}}</td>
+                        <td>{{rev.email}}</td>
+                        <td>
+                            <button pButton pRipple type="button" icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-raised p-button-danger"></button> &nbsp;
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+        </div>
+
+
+        <div class="p-5">
+            <div class="row flex">
+                <div class="col-5 pr-3">
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+                        <input type="text" pInputText placeholder="Username" [style]="{'width':'100%'}">         
+                    </div>
+                </div>
+            
+                <div class="col-5 pl-3">
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+                        <input type="text" pInputText placeholder="Price" [style]="{'width':'100%'}">       
+                    </div>
+                </div>
+
+                <div class="col-2 text-right pl-3">
+                    <button pButton type="button" label="Add" [style]="{'width':'100%'}"></button> 
+                </div>
+            </div>
+            <div class="row text-right p-2">
+                <button pButton type="button" label="Close" [style]="{'width':'20%'}"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-------Add modal------->
+<p-dialog [(visible)]="display">
+    <ng-template pTemplate="header">
+        Header content here
+    </ng-template>
+    Content
+    <p-footer>
+        //buttons
+    </p-footer>
+</p-dialog>

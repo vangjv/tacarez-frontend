@@ -26,6 +26,10 @@ import { HomeComponent } from './features/home/home.component';
 import { NewFeatureComponent } from './features/new-feature/new-feature.component';
 import { MyFeaturesComponent } from './features/my-features/my-features.component';
 import {TableModule} from 'primeng/table';
+import {BadgeModule} from 'primeng/badge';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {DialogModule} from 'primeng/dialog';
 
 @NgModule({
   declarations: [
@@ -52,13 +56,17 @@ import {TableModule} from 'primeng/table';
     RadioButtonModule,
     DropdownModule,
     ButtonModule,
-    TableModule
-    
+    TableModule,
+    BadgeModule,
+    ConfirmDialogModule,
+    DialogModule,
   ],
   providers: [
     // {provide: LocationStrategy, useClass: HashLocationStrategy},
     MenuService,
-    BreadcrumbService
+    BreadcrumbService,
+    ConfirmationService,
+    MessageService
   ],
   bootstrap: [AppComponent]
 })
