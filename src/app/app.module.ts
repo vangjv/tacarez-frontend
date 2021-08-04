@@ -16,6 +16,8 @@ import {AppMenuitemComponent} from './app.menuitem.component';
 import {RadioButtonModule} from 'primeng/radiobutton';
 import {DropdownModule} from 'primeng/dropdown';
 import {ButtonModule} from 'primeng/button';
+import {DialogModule} from 'primeng/dialog';
+import {InputTextModule} from 'primeng/inputtext';
 
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -50,7 +52,9 @@ import { MyFeaturesComponent } from './features/my-features/my-features.componen
     BrowserAnimationsModule,
     RadioButtonModule,
     DropdownModule,
-    ButtonModule
+    ButtonModule,
+    DialogModule,
+    InputTextModule
   ],
   providers: [
     // {provide: LocationStrategy, useClass: HashLocationStrategy},
