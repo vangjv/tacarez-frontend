@@ -16,6 +16,8 @@ import {AppMenuitemComponent} from './app.menuitem.component';
 import {RadioButtonModule} from 'primeng/radiobutton';
 import {DropdownModule} from 'primeng/dropdown';
 import {ButtonModule} from 'primeng/button';
+import {CheckboxModule} from 'primeng/checkbox';
+import {InputTextModule} from 'primeng/inputtext';
 
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -31,6 +33,9 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {DialogModule} from 'primeng/dialog';
 import {TooltipModule} from 'primeng/tooltip';
+import {MergeRequestComponent} from './features/merge-request/merge-request.component';
+
+
 
 @NgModule({
   declarations: [
@@ -43,7 +48,8 @@ import {TooltipModule} from 'primeng/tooltip';
     AppMenuitemComponent,
     HomeComponent,
     NewFeatureComponent,
-    MyFeaturesComponent
+    MyFeaturesComponent,
+    MergeRequestComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +67,9 @@ import {TooltipModule} from 'primeng/tooltip';
     BadgeModule,
     ConfirmDialogModule,
     DialogModule,
-    TooltipModule
+    TooltipModule,
+    InputTextModule,
+    CheckboxModule,
   ],
   providers: [
     // {provide: LocationStrategy, useClass: HashLocationStrategy},

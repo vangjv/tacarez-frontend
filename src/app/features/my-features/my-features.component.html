@@ -28,7 +28,7 @@
                             </span>
                             <span class="pr-2 pl-2">
                                 <button pButton pRipple type="button" icon="fas fa-code-branch" 
-                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Merge Request" tooltipPosition="top"></button>
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Merge Request" tooltipPosition="top" routerLink="/mergerequest"></button>
                                     <i class="pi p-mr-4" pBadge style="font-size: 2rem" value="2"></i>
                             </span>
                             <span class="pr-2 pl-2">
@@ -50,7 +50,7 @@
 
 
 
-<!-------Add modal------->
+<!-------Stakeholder/Reviewer Modal------->
 <p-dialog [(visible)]="display" [breakpoints]="{'960px': '75vw', '640px': '100vw'}"
 [closeOnEscape]="true" [transitionOptions]="'100ms'" [resizable]="false" 
 [style]="{width: '50vw'}" [baseZIndex]="10000" [maximizable]="true" header="Stakeholders/Reviewers" scrollHeight="flex"
@@ -89,7 +89,7 @@
             <div class="col pl-3">
                 <div class="p-inputgroup mt-1">
                     <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
-                    <input type="text" pInputText placeholder="Price" [style]="{width:'100%'}">       
+                    <input type="text" pInputText placeholder="Email" [style]="{width:'100%'}">       
                 </div>
             </div>
 
@@ -102,8 +102,4 @@
                 <button pButton type="button" (click)="display=false" label="Close" [style]="{width:'40%'}"></button>
             </div>
         </div>
-
-
-
-
 </p-dialog>

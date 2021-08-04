@@ -1,0 +1,144 @@
+<div class="mt-5">
+    <!-- MERGE REQUEST(S) -->
+    <div class="col-12 md:col-6 lg:col-9 mx-auto">
+        <h4>Merge Request for Deforestation</h4>
+            <p-table [value]="mergeReq">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Requester</th>
+                        <th>Comments</th>
+                        <th>Actions</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-mr>
+                    <tr>
+                        <td>{{mr.requester}}</td>
+                        <td>{{mr.comments}}</td>
+                        <td style="text-align: center;">
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-search" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Open/View" tooltipPosition="top"></button>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-users" 
+                                class="p-button-rounded p-button-outlined p-button-raised" (click)="showStakeholder()" pTooltip="Request stakeholder review" tooltipPosition="top"></button>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-thumbs-up" 
+                                class="p-button-rounded p-button-outlined p-button-raised" (click)="showApprove()"  pTooltip="Approve" tooltipPosition="top"></button>
+                            </span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+    </div>
+</div>
+
+<!-- PENDING MERGE(S) -->
+<div class="mt-5">
+    <div class="col-12 md:col-6 lg:col-9 mx-auto">
+        <h4>Pending Merge(s) for Deforestation</h4>
+            <p-table [value]="pendingMerge">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Requester</th>
+                        <th>Comments</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-pm>
+                    <tr>
+                        <td>{{pm.requester}}</td>
+                        <td>{{pm.comments}}</td>
+                        <td>{{pm.status}}</td>
+                        <td style="text-align: center;">
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fa fa-pen" 
+                                class="p-button-rounded p-button-outlined p-button-raised p-button-secondary" pTooltip="Edit merge/Docusign process" tooltipPosition="top"></button>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-times" 
+                                class="p-button-rounded p-button-outlined p-button-raised p-button-secondary" pTooltip="Void Merge/Docusign envelope" tooltipPosition="top"></button>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-thumbs-up" 
+                                class="p-button-rounded p-button-outlined p-button-raised p-button-secondary" pTooltip="Approve" tooltipPosition="top"></button>
+                            </span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+    </div>
+</div>
+
+
+
+<!-------Approve Merge Modal( showApprove() )------->
+<p-dialog [(visible)]="approveMerge" [closeOnEscape]="true" [transitionOptions]="'100ms'" [resizable]="false" [modal]="true"
+[style]="{width: '35vw'}" header="Approve Merge" styleClass="dark-panel">
+    <div class="grid mt-3">
+        <div class="md:col-4 sm:col-5">Approval Note</div>
+        <div class="md:col-8 sm:col-7"><input id="" type="text" class="inputfield block" [style]="{width:'100%'}"></div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton type="button" (click)="approveMerge=false" label="Approve"></button>
+
+    </ng-template>
+</p-dialog>
+
+
+
+<!-------Request stakeholder review Modal( showStakeholder() )------->
+<p-dialog [(visible)]="displayStakeholderRev" [breakpoints]="{'960px': '75vw', '640px': '100vw'}"
+[closeOnEscape]="true" [transitionOptions]="'100ms'" [resizable]="false" [modal]="true"
+[style]="{width: '50vw'}" [baseZIndex]="10000" [maximizable]="true" header="Stakeholder Review Request" scrollHeight="flex">
+
+
+<button pButton type="button" (click)="displayStakeholderRev=false" label="Send Request"></button>
+
+    <p-table [value]="reviewerData" [scrollable]="true" scrollHeight="250px">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>                 
+                <th>Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rev>
+            <tr>
+                <td>{{rev.name}}</td>
+                <td>{{rev.email}}</td>
+                <td>
+                    <!-- <select id="role" class="w-full inputfield" style="appearance: auto">
+                        <option> </option>
+                        <option>Signer</option>
+                    </select> -->
+                    <p-dropdown [options]="roles" [(ngModel)]="selectedRoles" optionLabel="name" [style]="{width: '100%'}"></p-dropdown>
+                </td>
+                <td>
+                    <span class="text-right ml-5">
+                        <button pButton pRipple type="button" icon="pi pi-trash"
+                            class="p-button-rounded p-button-outlined p-button-raised p-button-danger">
+                        </button>
+                    </span>
+
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <div class="col-12">
+        <label for="message" class="pb-2">Message to reviewers:</label>
+        <textarea pInputTextarea rows="8" autoResize="autoResize" class="w-full"></textarea>
+        
+        
+    </div>
+    <div class="col-12">
+        <p-checkbox name="group1" value="val1" [(ngModel)]="selectedValues"></p-checkbox><label for="addMap" class="pl-2 pr-2">Add Preview of Map</label>
+        <p-checkbox name="group1" value="val2" [(ngModel)]="selectedValues"></p-checkbox><label for="allowRevise" class="pl-2 pr-2">Allow Revisions?</label>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <button pButton type="button" (click)="displayStakeholderRev=false" label="Send Request"></button>
+    </ng-template>
