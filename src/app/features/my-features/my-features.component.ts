@@ -3,6 +3,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ConfirmationService, ConfirmEventType, MessageService } from 'primeng/api';
 
 
+
+
 @Component({
   selector: 'app-my-features',
   templateUrl: './my-features.component.html',
@@ -18,6 +20,8 @@ export class MyFeaturesComponent implements OnInit {
   showDialog() {
       this.display = true;
   }
+
+
 
   myFeat = [
     {
@@ -59,36 +63,23 @@ export class MyFeaturesComponent implements OnInit {
     {
       name: 'Tony Stark',
       email: 't.stark@gmail.com'
-    },
-    {
-      name: 'James Bond',
-      email: 'james.bond@gmail.com'
-    },
-    {
-      name: 'Professor Xavier',
-      email: 'prof.x@gmail.com'
-    },
-    {
-      name: 'Bruce Wayne',
-      email: 'bruce@gmail.com'
-    },
-    {
-      name: 'Tony Stark',
-      email: 't.stark@gmail.com'
     }
   ]
+
+
+
 
   constructor(
     private confirmationService: ConfirmationService, 
     private messageService: MessageService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
   }
 
-
   showModalDialog() {
     this.displayModal = true;
   }
+
 
 }
