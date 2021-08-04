@@ -94,8 +94,20 @@
 [closeOnEscape]="true" [transitionOptions]="'100ms'" [resizable]="false" [modal]="true"
 [style]="{width: '50vw'}" [baseZIndex]="10000" [maximizable]="true" header="Stakeholder Review Request" scrollHeight="flex">
 
+<div class="grid">
+    <div class="md:col-5 sm:col-7">
+        <select id="revList" class="w-full inputfield" style="appearance: auto">
+        <option>Reviewers List</option>
+        <option>John Snow</option>
+        </select>
+    </div>
+    <div class="md:col-7 sm:col-7">
+        <button pButton type="button" label="Add Reviewer" class="mr-2"></button>
+        <button pButton type="button" label="Add All Stakeholders"></button>
+    </div>
 
-<button pButton type="button" (click)="displayStakeholderRev=false" label="Send Request"></button>
+</div>
+
 
     <p-table [value]="reviewerData" [scrollable]="true" scrollHeight="250px">
         <ng-template pTemplate="header">

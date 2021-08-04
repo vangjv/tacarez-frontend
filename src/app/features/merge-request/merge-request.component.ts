@@ -2,8 +2,7 @@ import { Component, OnInit} from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
 interface Role {
-  name: string,
-  code: string
+  name: string
 }
 
 @Component({
@@ -32,10 +31,12 @@ export class MergeRequestComponent implements OnInit {
     {
       requester: 'John Smith',
       comments: 'New Evidence',
+      roles: ''
     },
     {
       requester: 'Harry Potter',
       comments: 'Evidence from locals',
+      role: ''
     },
   ]
 
@@ -79,12 +80,13 @@ selectedValues: string[] = [];
     private messageService: MessageService
     ) { 
       this.roles = [
-        {name: 'New York', code: 'NY'},
-        {name: 'Rome', code: 'RM'},
+        {name: 'Signer'},
+        {name: '--'},
       ];
       }
 
   ngOnInit(): void {
   }
+
 
 }
