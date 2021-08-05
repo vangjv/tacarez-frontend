@@ -16,6 +16,8 @@ import {AppMenuitemComponent} from './app.menuitem.component';
 import {RadioButtonModule} from 'primeng/radiobutton';
 import {DropdownModule} from 'primeng/dropdown';
 import {ButtonModule} from 'primeng/button';
+import {DialogModule} from 'primeng/dialog';
+import {InputTextModule} from 'primeng/inputtext';
 import {MenuModule} from 'primeng/menu';
 
 import { FormsModule } from '@angular/forms';
@@ -112,6 +114,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     RadioButtonModule,
     DropdownModule,
     ButtonModule,
+    DialogModule,
+    InputTextModule
     MenuModule
   ],
   providers: [

@@ -8,6 +8,10 @@ import * as typeCreator from '@arcgis/core/renderers/smartMapping/creators/type'
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import FieldConfig from '@arcgis/core/widgets/FeatureForm/FieldConfig';
 import Renderer from '@arcgis/core/renderers/Renderer';
+import Sketch from "@arcgis/core/widgets/Sketch";
+import LayerList from '@arcgis/core/widgets/LayerList';
+import Swipe from '@arcgis/core/widgets/Swipe';
+import Compass from "@arcgis/core/widgets/Compass";
 
 @Component({
   selector: 'app-esri-map',
@@ -19,6 +23,9 @@ export class EsriMapComponent implements OnInit {
 
   // this is needed to be able to create the MapView at the DOM element in this component
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
+
+  mergeDialog: Boolean;
+  saveMapDialog: Boolean;
 
   constructor() { }
 
@@ -134,6 +141,12 @@ export class EsriMapComponent implements OnInit {
       name: "open1",
       label: "open1"
     });
+
+    let compass = new Compass({
+      view: mapView
+    });
+    mapView.ui.add(compass, "top-left");
+
     const editor:Editor = new Editor({
       view:mapView,
       layerInfos: [
@@ -149,6 +162,29 @@ export class EsriMapComponent implements OnInit {
       ]
     });
     mapView.ui.add(editor, "top-right");
+
+    const sketch:Sketch = new Sketch({
+      view: mapView,
+      layer: geojsonLayer,
+      creationMode: "update"
+    });
+    mapView.ui.add(sketch, "bottom-left");
+
+    const layerList = new LayerList({
+      view: mapView,
+      listItemCreatedFunction: function(event) {
+        const item = event.item;
+        if (item.layer.type != "group") {
+          // don't show legend twice
+          item.panel = {
+            content: "legend",
+            open: true
+          };
+        }
+      }
+    });
+    mapView.ui.add(layerList, "bottom-right");
+
 
     mapView.when(() => {
       const typeParams = {
@@ -197,7 +233,26 @@ export class EsriMapComponent implements OnInit {
         .catch(error => console.warn(error));
     });
 
+    mapView.ui.add("mergeBtn", "top-left");
+    mapView.ui.add("saveMapBtn", "top-left");
 
+    // // create a new Swipe widget
+    // const swipe = new Swipe({
+    //   leadingLayers: [infrared],
+    //   trailingLayers: [nearInfrared],
+    //   position: 35, // set position of widget to 35%
+    //   view: mapView
+    // });
+    // // add the widget to the view
+    // mapView.ui.add(swipe);
+  }
+
+  showMerge(){
+    this.mergeDialog = true;
+  }
+
+  showSaveMap(){
+    this.saveMapDialog = true;
   }
 
   removeObjectId(attributes:any) {
