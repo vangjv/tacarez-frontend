@@ -33,7 +33,6 @@ import {TableModule} from 'primeng/table';
 import {BadgeModule} from 'primeng/badge';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService, MessageService} from 'primeng/api';
-import {DialogModule} from 'primeng/dialog';
 import {TooltipModule} from 'primeng/tooltip';
 import {MergeRequestComponent} from './features/merge-request/merge-request.component';
 
@@ -109,7 +108,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     HomeComponent,
     NewFeatureComponent,
     MyFeaturesComponent,
-    MergeRequestComponent
+    MergeRequestComponent,
     LogOutComponent    
   ],
   imports: [
@@ -133,7 +132,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     InputTextModule,
     CheckboxModule,
     DialogModule,
-    InputTextModule
+    InputTextModule,
     MenuModule
   ],
   providers: [
