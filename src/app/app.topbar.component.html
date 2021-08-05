@@ -12,7 +12,9 @@
     <a id="options-menu-button" href="#" (click)="appMain.toggleTopMenu($event)">
         <span class="pi pi-ellipsis-h"></span>
     </a>
-
+    <div>
+        {{currentUser?.name}}
+    </div>
     <div id="topbar-icons" class="animated"
          [ngClass]="{'topbar-icons-visible flipInX':appMain.topMenuActive,'flipOutX':appMain.topMenuLeaving}">
 
@@ -25,9 +27,16 @@
             <span class="topbar-item-text">Settings</span>
             <span class="topbar-icon pi pi-cog"></span>
         </a>
-        <a href="#">
+        <a href="#" (click)="userMenu.toggle($event)" *ngIf="currentUser">
+            <span class="topbar-item-text">User</span>
+            <span class="topbar-icon pi pi-user"></span>
+        </a>
+        <a href="#" (click)="signInMenu.toggle($event)" *ngIf="currentUser == undefined || currentUser == null">
             <span class="topbar-item-text">User</span>
             <span class="topbar-icon pi pi-user"></span>
         </a>
     </div>
 </div>
+
+<p-menu #signInMenu [popup]="true" [model]="signInMenuItems"></p-menu>
+<p-menu #userMenu [popup]="true" [model]="userMenuItems"></p-menu>
