@@ -8,6 +8,7 @@ import * as typeCreator from '@arcgis/core/renderers/smartMapping/creators/type'
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import FieldConfig from '@arcgis/core/widgets/FeatureForm/FieldConfig';
 import Renderer from '@arcgis/core/renderers/Renderer';
+import Sketch from '@arcgis/core/widgets/Sketch';
 import Sketch from "@arcgis/core/widgets/Sketch";
 import LayerList from '@arcgis/core/widgets/LayerList';
 import Swipe from '@arcgis/core/widgets/Swipe';
@@ -206,6 +207,17 @@ export class EsriMapComponent implements OnInit {
     
     const exportBtn = document.getElementById("export");
     mapView.ui.add(exportBtn, "top-left");
+
+    mapView.when(() => {
+      const sketch = new Sketch({
+        layer: geojsonLayer,
+        view: mapView,
+        // graphic will be selected as soon as it is created
+        creationMode: "update"
+      });
+
+      mapView.ui.add(sketch, "bottom-right");
+    });
 
     exportBtn.addEventListener("click", () => {
       geojsonLayer

@@ -16,6 +16,7 @@ import {AppMenuitemComponent} from './app.menuitem.component';
 import {RadioButtonModule} from 'primeng/radiobutton';
 import {DropdownModule} from 'primeng/dropdown';
 import {ButtonModule} from 'primeng/button';
+import {CheckboxModule} from 'primeng/checkbox';
 import {DialogModule} from 'primeng/dialog';
 import {InputTextModule} from 'primeng/inputtext';
 import {MenuModule} from 'primeng/menu';
@@ -28,6 +29,15 @@ import { BreadcrumbService } from './app.breadcrumb.service';
 import { HomeComponent } from './features/home/home.component';
 import { NewFeatureComponent } from './features/new-feature/new-feature.component';
 import { MyFeaturesComponent } from './features/my-features/my-features.component';
+import {TableModule} from 'primeng/table';
+import {BadgeModule} from 'primeng/badge';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {DialogModule} from 'primeng/dialog';
+import {TooltipModule} from 'primeng/tooltip';
+import {MergeRequestComponent} from './features/merge-request/merge-request.component';
+
+
 
 // Azure B2C
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
@@ -99,6 +109,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     HomeComponent,
     NewFeatureComponent,
     MyFeaturesComponent,
+    MergeRequestComponent
     LogOutComponent    
   ],
   imports: [
@@ -114,6 +125,13 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     RadioButtonModule,
     DropdownModule,
     ButtonModule,
+    TableModule,
+    BadgeModule,
+    ConfirmDialogModule,
+    DialogModule,
+    TooltipModule,
+    InputTextModule,
+    CheckboxModule,
     DialogModule,
     InputTextModule
     MenuModule
@@ -140,7 +158,9 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     MsalGuard,
     MsalBroadcastService,
     MenuService,
-    BreadcrumbService
+    BreadcrumbService,
+    ConfirmationService,
+    MessageService
   ],
   bootstrap: [AppComponent, MsalRedirectComponent]
 })

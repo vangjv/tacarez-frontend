@@ -1,7 +1,107 @@
-<div class="grid mt-5">
+<div class="mt-5">
     <div class="col-12 md:col-6 lg:col-9 mx-auto">
         <div>
             <h1>My features</h1>
+
+            <p-table [value]="myFeat">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th style="width: 15%;">Last Modified</th>
+                        <th>Actions</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-ft>
+                    <tr>
+                        <td>{{ft.name}}</td>
+                        <td>{{ft.description}}</td>
+                        <td>{{ft.lastdatemodified}}</td>
+                        <td style="text-align: center;">
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-search" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Open/View" tooltipPosition="top"></button>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-user-plus" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Contributors" tooltipPosition="top"></button>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-code-branch" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Merge Request" tooltipPosition="top" routerLink="/mergerequest"></button>
+                                    <i class="pi p-mr-4" pBadge style="font-size: 2rem" value="2"></i>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-users" 
+                                class="p-button-rounded p-button-outlined p-button-raised" (click)="showDialog()" pTooltip="Stakeholders & Reviewers" tooltipPosition="top"></button>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-share-alt" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Share" tooltipPosition="top"></button>
+                            </span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
         </div>
     </div>
 </div>
+
+
+
+<!-------Stakeholder/Reviewer Modal------->
+<p-dialog [(visible)]="display"
+[closeOnEscape]="true" [transitionOptions]="'100ms'" [resizable]="false" 
+[style]="{width: '50vw'}" [baseZIndex]="10000" [maximizable]="true" header="Stakeholders/Reviewers" scrollHeight="flex"
+>
+        <p-table [value]="reviewerData" [scrollable]="true" scrollHeight="flex" height="300px">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rev>
+                <tr>
+                    <td>{{rev.name}}</td>
+                    <td>{{rev.email}}</td>
+                    <td>
+                        <span class="text-right ml-5">
+                            <button pButton pRipple type="button" icon="pi pi-trash"
+                             class="p-button-rounded p-button-outlined p-button-raised p-button-danger">
+                            </button>
+                        </span>
+                        </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+
+        <ng-template pTemplate="footer">
+            <div class="row flex">
+                <div class="col pr-3">
+                    <div class="p-inputgroup mt-1">
+                        <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+                        <input type="text" pInputText placeholder="Username" [style]="{width:'100%'}">         
+                    </div>
+                </div>
+            
+                <div class="col pl-3">
+                    <div class="p-inputgroup mt-1">
+                        <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+                        <input type="text" pInputText placeholder="Email" [style]="{width:'100%'}">       
+                    </div>
+                </div>
+    
+                <div class="col-2 text-right pl-3 mt-1">
+                    <button pButton type="button" label="Add" [style]="{width:'100%'}"></button> 
+                </div>
+            </div>
+            <div class="mt-3 pt-3">
+                <button pButton type="button" (click)="display=false" label="Close" [style]="{width:'40%'}"></button>
+            </div>
+        </ng-template>
+</p-dialog>
+

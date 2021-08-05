@@ -4,6 +4,7 @@ import { AppMainComponent } from './app.main.component';
 import { HomeComponent } from './features/home/home.component';
 import { NewFeatureComponent } from './features/new-feature/new-feature.component';
 import { MyFeaturesComponent } from './features/my-features/my-features.component';
+import { MergeRequestComponent } from './features/merge-request/merge-request.component';
 import { LogOutComponent } from './features/log-out/log-out.component';
 
 const routes: Routes = [
@@ -13,6 +14,7 @@ const routes: Routes = [
       {path: '', component: HomeComponent},
       {path: 'new', component: NewFeatureComponent},
       {path: 'myfeatures', component: MyFeaturesComponent},
+      {path: 'mergerequest', component: MergeRequestComponent}
     ]
   },
   {
