@@ -17,6 +17,7 @@ import {RadioButtonModule} from 'primeng/radiobutton';
 import {DropdownModule} from 'primeng/dropdown';
 import {ButtonModule} from 'primeng/button';
 import {CheckboxModule} from 'primeng/checkbox';
+import {DialogModule} from 'primeng/dialog';
 import {InputTextModule} from 'primeng/inputtext';
 import {MenuModule} from 'primeng/menu';
 
@@ -131,6 +132,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     TooltipModule,
     InputTextModule,
     CheckboxModule,
+    DialogModule,
+    InputTextModule
     MenuModule
   ],
   providers: [
