@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  tacarezAPIEndpoint: "https://tacarezapi.azurewebsites.net"
 };
