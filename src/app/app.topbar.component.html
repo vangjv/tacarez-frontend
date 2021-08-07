@@ -27,11 +27,11 @@
             <span class="topbar-item-text">Settings</span>
             <span class="topbar-icon pi pi-cog"></span>
         </a>
-        <a href="#" (click)="userMenu.toggle($event)" *ngIf="currentUser">
+        <a (click)="userMenu.toggle($event)" *ngIf="currentUser">
             <span class="topbar-item-text">User</span>
             <span class="topbar-icon pi pi-user"></span>
         </a>
-        <a href="#" (click)="signInMenu.toggle($event)" *ngIf="currentUser == undefined || currentUser == null">
+        <a (click)="signInMenu.toggle($event)" *ngIf="currentUser == undefined || currentUser == null">
             <span class="topbar-item-text">User</span>
             <span class="topbar-icon pi pi-user"></span>
         </a>

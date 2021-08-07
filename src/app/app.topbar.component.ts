@@ -31,22 +31,25 @@ export class AppTopBarComponent implements OnInit, OnDestroy{
         this.userSubscription = this.stateService.stateChanged.subscribe(state=>{
             if (state) {
                 this.currentUser = state.currentUser;
+                this.userMenuItems = [
+                    {
+                        label: this.currentUser.name, 
+                        icon: 'pi pi-fw pi-user'
+                    },
+                    {
+                        label: 'Log out', 
+                        icon: 'pi pi-fw pi-sign-out',
+                        command: () => {
+                            this.logout();
+                        }
+                    }
+                ];
             }
         })
         this.items = [
             {label: 'New', icon: 'pi pi-fw pi-plus'},
             {label: 'Open', icon: 'pi pi-fw pi-download'},
             {label: 'Undo', icon: 'pi pi-fw pi-refresh'}
-        ];
-
-        this.userMenuItems = [
-            {
-                label: 'Log out', 
-                icon: 'pi pi-fw pi-sign-out',
-                command: () => {
-                    this.logout();
-                }
-            }
         ];
 
         this.signInMenuItems = [
