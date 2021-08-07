@@ -17,6 +17,8 @@ import { FeatureService } from 'src/app/core/services/feature.service';
 import { LoadingService } from 'src/app/core/loadingspinner/loading-spinner/loading.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { MsalService } from '@azure/msal-angular';
+import { Router } from '@angular/router';
+import { __rest } from 'tslib';
 
 @Component({
   selector: 'app-new-esri-map',
@@ -34,7 +36,7 @@ export class NewEsriMapComponent implements OnInit {
   saving:boolean = false;
   constructor(private geoJsonHelper:GeoJsonHelperService, private stateService:StateService, private featureService:FeatureService,
     private loadingService:LoadingService, private confirmationService: ConfirmationService, private messageService: MessageService,
-    private authService: MsalService) { }
+    private authService: MsalService, private router:Router) { }
 
   ngOnInit() {
     //load geojson data
@@ -213,6 +215,8 @@ export class NewEsriMapComponent implements OnInit {
         this.loadingService.decrementLoading();
         //redirect to new map
         //redirect uri to res.id
+        this.router.navigateByUrl("feature/" + res.id);
+        this.messageService.add({severity:'success', summary:'Success', detail:'Your feature was successfully created.'});
       }, err=>{
         this.loadingService.decrementLoading();
         console.log("Error from new feature request:", err);
