@@ -6,6 +6,7 @@ import { NewFeatureComponent } from './features/new-feature/new-feature.componen
 import { MyFeaturesComponent } from './features/my-features/my-features.component';
 import { MergeRequestComponent } from './features/merge-request/merge-request.component';
 import { LogOutComponent } from './features/log-out/log-out.component';
+import { LoadFeatureComponent } from './features/load-feature/load-feature.component';
 
 const routes: Routes = [
   {
@@ -13,6 +14,8 @@ const routes: Routes = [
     children: [
       {path: '', component: HomeComponent},
       {path: 'new', component: NewFeatureComponent},
+      {path: 'feature/:featureName', component: LoadFeatureComponent},
+      {path: 'feature',  redirectTo: ''},
       {path: 'myfeatures', component: MyFeaturesComponent},
       {path: 'mergerequest', component: MergeRequestComponent}
     ]
