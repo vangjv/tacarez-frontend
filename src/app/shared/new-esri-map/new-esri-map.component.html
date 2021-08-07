@@ -1,0 +1,51 @@
+<!-- Here's the DIV that we inject the map into -->
+<div #mapViewNode>
+
+</div>
+
+<p-dialog header="Save Map Feature" [(visible)]="saveMapDialog" [style]="{width: '50vw'}">
+    <div [formGroup]="saveMapForm">
+        <div class="grid" >
+            <div class="col-12 md:4">
+                <div class="p-fluid">
+                    <div class="p-field">
+                        <label class="mr-2">Feature name</label>
+                        <input type="Text" pInputText [style]="{'width': '100%'}" formControlName="name">
+                    </div>
+                    <div class="p-field">
+                        <label class="mr-2">Description</label>
+                        <input type="Text" pInputText [style]="{'width': '100%'}" formControlName="description">
+                    </div>
+                    <div class="p-field">
+                        <label class="mr-2">Tags</label>
+                        <input type="Text" pInputText [style]="{'width': '100%'}" formControlName="tags">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p-footer>
+            <button pButton (click)="saveMapFeature()" [disabled]="saveMapForm.invalid || saving">Save</button>
+        </p-footer>
+    </div>    
+</p-dialog>
+
+<p-dialog header="Request Merge" [(visible)]="mergeDialog" [style]="{width: '50vw'}">
+    <div class="p-grid">
+        <div class="p-col-12 p-md-4">
+            <div class="p-fluid">
+                <div class="p-field">
+                    <label class="p-mr-2">Reason for request</label>
+                    <input type="Text" pInputText [style]="{'width': '100%'}">
+                </div>
+                <div class="p-field">
+                    <label class="p-mr-2">Change notes</label>
+                    <input type="Text" pInputText [style]="{'width': '100%'}">
+                </div>
+            </div>
+        </div>
+    </div>
+    <p-footer>
+        <button pButton>Save</button>
+        <button pButton>Send Request</button>
+    </p-footer>
+</p-dialog>

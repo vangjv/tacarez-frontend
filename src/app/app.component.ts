@@ -1,10 +1,11 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService, MsalBroadcastService } from '@azure/msal-angular';
 import { EventMessage, EventType, InteractionType, InteractionStatus, PopupRequest, RedirectRequest, AuthenticationResult, AuthError } from '@azure/msal-browser';
 import { PrimeNGConfig } from 'primeng/api';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { b2cPolicies } from './b2c-config';
+import { LoadingService } from './core/loadingspinner/loading-spinner/loading.service';
 import { StateService } from './core/services/state.service';
 
 interface Payload extends AuthenticationResult {
@@ -17,7 +18,7 @@ interface Payload extends AuthenticationResult {
     selector: 'app-root',
     templateUrl: './app.component.html'
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     menuMode = 'overlay';
     lightMenu = true;
     inputStyle = 'outlined';
@@ -25,9 +26,12 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly _destroying$ = new Subject<void>();
     isIframe = false;
     loginDisplay = false;
-
+    loadingModal:boolean = true;
+    loadingMessage:string = "Loading...";
+    loadingSubscription!:Subscription;
     constructor(private primengConfig: PrimeNGConfig, @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
-        private authService: MsalService, private msalBroadcastService: MsalBroadcastService, private stateService:StateService) {
+        private authService: MsalService, private msalBroadcastService: MsalBroadcastService, private stateService:StateService,
+        private loadingService:LoadingService) {
     }
 
     ngOnInit() {
@@ -44,6 +48,7 @@ export class AppComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                 let accounts = this.authService.instance.getAllAccounts();
                 console.log("accounts:", this.authService.instance.getAllAccounts());
+                console.log("accounts[0].idTokenClaims", JSON.stringify(accounts[0].idTokenClaims));
                 // if (accounts.length > 0) {
                 //     accounts.forEach(acc => {
                 //         if (acc.tenantId != "c6d1856e-926c-480e-b15d-6c24d2ff3386") {
@@ -157,5 +162,19 @@ export class AppComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this._destroying$.next(undefined);
         this._destroying$.complete();
+        if (this.loadingSubscription) {
+            this.loadingSubscription.unsubscribe();
+          }
+          this._destroying$.next(undefined);
+          this._destroying$.complete();
     }
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+          this.loadingSubscription = this.loadingService.loading$.subscribe(res=>{
+            this.loadingModal = res.loading ? res.loading : false;
+            this.loadingMessage = res.loadingMessage ? res.loadingMessage : "Loading...";
+          });
+        }, 1);
+      }
 }

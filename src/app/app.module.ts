@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { EsriMapComponent } from './shared/esri-map/esri-map.component';
+import { NewEsriMapComponent } from './shared/new-esri-map/new-esri-map.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {AppMainComponent} from './app.main.component';
@@ -20,8 +21,9 @@ import {CheckboxModule} from 'primeng/checkbox';
 import {DialogModule} from 'primeng/dialog';
 import {InputTextModule} from 'primeng/inputtext';
 import {MenuModule} from 'primeng/menu';
+import {ToastModule} from 'primeng/toast';
 
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {MenuService} from './app.menu.service';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
@@ -44,6 +46,10 @@ import { MsalGuard, MsalInterceptor, MsalBroadcastService, MsalInterceptorConfig
 
 import { b2cPolicies, apiConfig } from './b2c-config';
 import { LogOutComponent } from './features/log-out/log-out.component';
+import { LoadingSpinnerModule } from './core/loadingspinner/loadingspinner.module';
+import { LoadingService } from './core/loadingspinner/loading-spinner/loading.service';
+import { LoadEsriMapComponent } from './shared/load-esri-map/load-esri-map.component';
+import { LoadFeatureComponent } from './features/load-feature/load-feature.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -109,7 +115,10 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     NewFeatureComponent,
     MyFeaturesComponent,
     MergeRequestComponent,
-    LogOutComponent    
+    LogOutComponent,
+    NewEsriMapComponent,
+    LoadEsriMapComponent,
+    LoadFeatureComponent
   ],
   imports: [
     BrowserModule,
@@ -117,7 +126,9 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     MsalModule,
+    LoadingSpinnerModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
@@ -133,7 +144,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     CheckboxModule,
     DialogModule,
     InputTextModule,
-    MenuModule
+    MenuModule,
+    ToastModule
   ],
   providers: [
     // {
@@ -159,7 +171,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     MenuService,
     BreadcrumbService,
     ConfirmationService,
-    MessageService
+    MessageService,
+    LoadingService
   ],
   bootstrap: [AppComponent, MsalRedirectComponent]
 })
