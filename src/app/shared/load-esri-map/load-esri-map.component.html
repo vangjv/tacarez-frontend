@@ -57,3 +57,19 @@
         <button pButton (click)="showGetDataDialog = false">Close</button>
     </p-footer>
 </p-dialog>
+
+
+<p-dialog header="Share feature" [(visible)]="showShareFeatureDialog" [style]="{width: '50vw'}">
+    <div class="p-grid">
+        <div class="p-col-12 p-md-4">
+            <label class="p-mr-2">URL to share this feature</label>
+            <div class="p-inputgroup">
+                <input type="text" pInputText [(ngModel)]="featureURL" [disabled]="true">   
+                <button type="button" pButton pRipple icon="pi pi-copy" styleClass="p-button-warn" (click)="copyFeatureURLToClipBoard()"></button>      
+            </div>
+        </div>
+    </div>
+    <p-footer>
+        <button pButton (click)="showShareFeatureDialog = false">Close</button>
+    </p-footer>
+</p-dialog>

@@ -32,12 +32,14 @@ export class LoadEsriMapComponent implements OnInit {
   @Input() branch:string = "main";
   @Input() geojsonLayer:GeoJSONLayer;
   @Input() isOwnerOrContributor:boolean = false;
-  mergeDialog: Boolean;
-  saveMapDialog: Boolean;  
+  mergeDialog: boolean;
+  saveMapDialog: boolean;  
+  showShareFeatureDialog: boolean = false;
   showGetDataDialog:boolean = false;
   saveMapForm:FormGroup
   saving:boolean = false;
   geoJsonURL:string = "";
+  featureURL:string = "";
   constructor(private geoJsonHelper:GeoJsonHelperService, private stateService:StateService, private featureService:FeatureService,
     private loadingService:LoadingService, private confirmationService: ConfirmationService, private messageService: MessageService,
     private authService: MsalService) { }
@@ -54,6 +56,7 @@ export class LoadEsriMapComponent implements OnInit {
     this.initializeMap();
     //set geojsonurl
     this.geoJsonURL = "https://api.tacarez.com/api/geojson/" + this.featureName;
+    this.featureURL = "https://www.tacarez.com/feature/" + this.featureName;
     console.log("isOwnerOrContributor:", this.isOwnerOrContributor);
   }
 
@@ -148,7 +151,7 @@ export class LoadEsriMapComponent implements OnInit {
     const shareFeatureBtn = document.getElementById("shareFeature");
     mapView.ui.add(shareFeatureBtn, "top-left");
     shareFeatureBtn.addEventListener("click", () => {
-      //share
+      this.showShareFeatureDialog = true;
     });
 
     const reviseFeatureBtn = document.getElementById("reviseFeature");
@@ -262,6 +265,10 @@ export class LoadEsriMapComponent implements OnInit {
 
   copyGeoJsonURLToClipBoard(){
     this.copyTextToClipboard(this.geoJsonURL);
+  }
+
+  copyFeatureURLToClipBoard(){
+    this.copyTextToClipboard(this.featureURL);
   }
 
   fallbackCopyTextToClipboard(text) {
