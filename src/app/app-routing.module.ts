@@ -15,6 +15,7 @@ const routes: Routes = [
       {path: '', component: HomeComponent},
       {path: 'new', component: NewFeatureComponent},
       {path: 'feature/:featureName', component: LoadFeatureComponent},
+      {path: 'feature/:featureName/:hash', component: LoadFeatureComponent},
       {path: 'feature',  redirectTo: ''},
       {path: 'myfeatures', component: MyFeaturesComponent},
       {path: 'mergerequest', component: MergeRequestComponent}

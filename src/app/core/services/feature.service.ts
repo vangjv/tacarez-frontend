@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Feature } from 'src/app/core/models/feature.model';
 import { NewFeatureRequest } from 'src/app/core/models/new-feature-request.model';
 import { environment } from 'src/environments/environment';
+import { UpdateFeatureRequest } from '../models/update-feature-request.model';
 @Injectable({
   providedIn: 'root'
 })
@@ -20,5 +21,9 @@ export class FeatureService {
 
   createFeature(newFeatureRequest:NewFeatureRequest){
     return this.httpClient.post<Feature>(this.apiEndpoint + "/api/features", newFeatureRequest);
+  }
+
+  updateFeature(updateFeatureRequest:UpdateFeatureRequest, featureName:string, branch:string){
+    return this.httpClient.put<Feature>(this.apiEndpoint + "/api/features/" + featureName + "/" + branch, updateFeatureRequest);
   }
 }

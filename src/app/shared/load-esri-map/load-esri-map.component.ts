@@ -17,6 +17,7 @@ import { FeatureService } from 'src/app/core/services/feature.service';
 import { LoadingService } from 'src/app/core/loadingspinner/loading-spinner/loading.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { MsalService } from '@azure/msal-angular';
+import { GitHubUser, UpdateFeatureRequest } from 'src/app/core/models/update-feature-request.model';
 
 @Component({
   selector: 'app-load-esri-map',
@@ -27,12 +28,16 @@ import { MsalService } from '@azure/msal-angular';
 export class LoadEsriMapComponent implements OnInit {
   // this is needed to be able to create the MapView at the DOM element in this component
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
+  @Input() featureName:string;
+  @Input() branch:string = "main";
   @Input() geojsonLayer:GeoJSONLayer;
   @Input() isOwnerOrContributor:boolean = false;
   mergeDialog: Boolean;
   saveMapDialog: Boolean;  
+  showGetDataDialog:boolean = false;
   saveMapForm:FormGroup
   saving:boolean = false;
+  geoJsonURL:string = "";
   constructor(private geoJsonHelper:GeoJsonHelperService, private stateService:StateService, private featureService:FeatureService,
     private loadingService:LoadingService, private confirmationService: ConfirmationService, private messageService: MessageService,
     private authService: MsalService) { }
@@ -47,14 +52,14 @@ export class LoadEsriMapComponent implements OnInit {
     }    
     this.saveMapForm = this.createSaveMapForm();
     this.initializeMap();
+    //set geojsonurl
+    this.geoJsonURL = "https://api.tacarez.com/api/geojson/" + this.featureName;
     console.log("isOwnerOrContributor:", this.isOwnerOrContributor);
   }
 
   createSaveMapForm():FormGroup{
     return new FormGroup({
-      name: new FormControl(null, [Validators.required, Validators.pattern('[a-zA-Z0-9 ]*')]),
-      description: new FormControl(null, [Validators.required]),
-      tags: new FormControl(null),
+      notes: new FormControl(null, [Validators.required])
     });
   }
 
@@ -152,17 +157,23 @@ export class LoadEsriMapComponent implements OnInit {
       //share
     });
 
-    const cloneFeatureBtn = document.getElementById("cloneFeature");
-    mapView.ui.add(cloneFeatureBtn, "top-left");
-    cloneFeatureBtn.addEventListener("click", () => {
-      //share
+    // const cloneFeatureBtn = document.getElementById("cloneFeature");
+    // mapView.ui.add(cloneFeatureBtn, "top-left");
+    // cloneFeatureBtn.addEventListener("click", () => {
+    //   //share
+    // });
+
+    const getDataBtn = document.getElementById("getData");
+    mapView.ui.add(getDataBtn, "top-left");
+    getDataBtn.addEventListener("click", () => {
+      this.showGetDataDialog = true;
     });
 
     const saveFeatureBtn = document.getElementById("saveFeature");
     if (this.isOwnerOrContributor == true) {
       mapView.ui.add(saveFeatureBtn, "top-left");
       saveFeatureBtn.addEventListener("click", () => {
-        // this.showSaveMap();      
+        this.showSaveMap();      
       });
     }
   }
@@ -222,25 +233,20 @@ export class LoadEsriMapComponent implements OnInit {
         }
       );
       let encodedGeoJson = btoa(JSON.stringify(FeatureCollection));
-      let newFeature:NewFeature = new NewFeature();
-      let mapOwner = new User();      
-      let oidClaims:OIDToken = currentUser.idTokenClaims as OIDToken;
-      mapOwner.email = oidClaims.emails[0];
-      mapOwner.firstName = oidClaims.given_name;
-      mapOwner.lastName = oidClaims.family_name;
-      mapOwner.guid = oidClaims.oid;
-      newFeature.Id = this.saveMapForm.value.name;
-      newFeature.Description = this.saveMapForm.value.description;
-      newFeature.Owner = mapOwner
-      let newFeatureRequest:NewFeatureRequest = new NewFeatureRequest();
-      newFeatureRequest.feature = newFeature;
-      newFeatureRequest.message = "Initial map";
-      newFeatureRequest.content = encodedGeoJson;
-      this.featureService.createFeature(newFeatureRequest).toPromise().then(res=>{
-        console.log("response from new features request:", res);
+      let updateFeatureRequest:UpdateFeatureRequest = new UpdateFeatureRequest();
+      let committer:GitHubUser = new GitHubUser();
+      let oidClaims:OIDToken = currentUser.idTokenClaims as OIDToken;  
+      committer.email = oidClaims.emails[0];
+      committer.name = oidClaims.name;
+      committer.date = new Date().toDateString();
+      updateFeatureRequest.committer = committer;
+      updateFeatureRequest.content = encodedGeoJson;
+      updateFeatureRequest.message = this.saveMapForm.value.notes;
+      this.featureService.updateFeature(updateFeatureRequest, this.featureName, this.branch).toPromise().then(res=>{
+        console.log("response from update feature request:", res);
         this.loadingService.decrementLoading();
-        //redirect to new map
-        //redirect uri to res.id
+        this.messageService.add({severity:'success', summary:'Success', detail:'Your feature was successfully updated.'});
+        this.saveMapDialog = false;
       }, err=>{
         this.loadingService.decrementLoading();
         console.log("Error from new feature request:", err);
@@ -252,6 +258,46 @@ export class LoadEsriMapComponent implements OnInit {
       });
     })
     .catch(error => console.warn(error));
+  }
+
+  copyGeoJsonURLToClipBoard(){
+    this.copyTextToClipboard(this.geoJsonURL);
+  }
+
+  fallbackCopyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+    
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+  
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+      this.messageService.add({severity:'success', summary:'Success', detail:'URL Copied to clipboard'});
+    } catch (err) {
+      console.error('Fallback: Oops, unable to copy', err);
+    }
+  
+    document.body.removeChild(textArea);
+  }
+  
+  copyTextToClipboard(text) {
+    if (!navigator.clipboard) {
+      this.fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(()=> {
+      this.messageService.add({severity:'success', summary:'Success', detail:'URL Copied to clipboard'});
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
   }
 
 }

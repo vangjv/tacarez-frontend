@@ -16,6 +16,7 @@ import { OIDToken } from 'src/app/core/models/id-token.model';
 })
 export class LoadFeatureComponent implements OnInit, OnDestroy {
   featureName:string;
+  hash:string;
   routeSub:Subscription;
   geojsonLayer:GeoJSONLayer;
   doneLoading:boolean = false;
@@ -34,6 +35,7 @@ export class LoadFeatureComponent implements OnInit, OnDestroy {
     this.loadingService.incrementLoading();
     this.routeSub = this.route.paramMap.subscribe((params: ParamMap) => {
       this.featureName = params.get('featureName');
+      this.hash = params.get('hash');
       this.checkIfFeatureExist();
     });
     this.currentUser = this.stateService.getCurrentUser();
@@ -49,7 +51,11 @@ export class LoadFeatureComponent implements OnInit, OnDestroy {
         this.isOwnerOrContributor = true;
       }
       this.loadingService.decrementLoading();
-      this.geojsonLayer = this.geoJsonHelper.loadGeoJSONLayer(feature.gitHubRawURL);
+      if (this.hash != null || this.hash != undefined) {
+        this.geojsonLayer = this.geoJsonHelper.loadGeoJSONLayer(`https://raw.githubusercontent.com/dshackathon/${feature.id}/${this.hash}/data.geojson`);
+      } else {
+        this.geojsonLayer = this.geoJsonHelper.loadGeoJSONLayer(feature.gitHubRawURL);
+      }      
       this.doneLoading = true;
       this.loadingService.decrementLoading();
     }, err=>{
