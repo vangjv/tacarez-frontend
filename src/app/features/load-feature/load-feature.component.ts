@@ -46,8 +46,8 @@ export class LoadFeatureComponent implements OnInit, OnDestroy {
     this.featureService.getFeatureByName(this.featureName).toPromise().then(feature=>{
       console.log("feature:", feature);
       console.log("feature.owner.GUID:", feature.owner.guid);
-      console.log("oid:", (this.currentUser.idTokenClaims as OIDToken).oid);
-      if (feature.owner.guid == (this.currentUser.idTokenClaims as OIDToken).oid) {
+      console.log("oid:", (this.currentUser?.idTokenClaims as OIDToken)?.oid);
+      if (feature.owner.guid == (this.currentUser?.idTokenClaims as OIDToken)?.oid) {
         this.isOwnerOrContributor = true;
       }
       this.loadingService.decrementLoading();
@@ -62,6 +62,7 @@ export class LoadFeatureComponent implements OnInit, OnDestroy {
       this.loadingService.decrementLoading();
       if (err.error = "No feature found with that name"){
         this.messageService.add({severity:'info', summary: 'Info', detail: 'No feature with that name was found.  Please check the name of the feature and try again.'});
+        this.loadingService.decrementLoading();
       }
     });
   }

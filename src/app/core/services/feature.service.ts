@@ -19,6 +19,10 @@ export class FeatureService {
     return this.httpClient.get<Feature>(this.apiEndpoint + "/api/features/" + featureName);
   }
 
+  getFeaturesByUser(userGUID:string){
+    return this.httpClient.get<Feature[]>(this.apiEndpoint + "/api/features/user/" + userGUID);
+  }
+
   createFeature(newFeatureRequest:NewFeatureRequest){
     return this.httpClient.post<Feature>(this.apiEndpoint + "/api/features", newFeatureRequest);
   }

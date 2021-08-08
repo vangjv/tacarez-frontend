@@ -48,7 +48,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
             .subscribe(() => {
                 let accounts = this.authService.instance.getAllAccounts();
                 console.log("accounts:", this.authService.instance.getAllAccounts());
-                console.log("accounts[0].idTokenClaims", JSON.stringify(accounts[0].idTokenClaims));
+                console.log("accounts[0].idTokenClaims", JSON.stringify(accounts[0]?.idTokenClaims));
                 // if (accounts.length > 0) {
                 //     accounts.forEach(acc => {
                 //         if (acc.tenantId != "c6d1856e-926c-480e-b15d-6c24d2ff3386") {

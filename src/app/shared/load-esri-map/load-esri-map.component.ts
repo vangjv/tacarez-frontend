@@ -32,6 +32,8 @@ export class LoadEsriMapComponent implements OnInit {
   @Input() branch:string = "main";
   @Input() geojsonLayer:GeoJSONLayer;
   @Input() isOwnerOrContributor:boolean = false;
+  map: WebMap;
+  mapView: MapView;
   mergeDialog: boolean;
   saveMapDialog: boolean;  
   showShareFeatureDialog: boolean = false;
@@ -51,13 +53,14 @@ export class LoadEsriMapComponent implements OnInit {
         this.geojsonLayer = geoJsonLayer;
         this.initializeMap();
       });    
-    }    
-    this.saveMapForm = this.createSaveMapForm();
-    this.initializeMap();
-    //set geojsonurl
-    this.geoJsonURL = "https://api.tacarez.com/api/geojson/" + this.featureName;
-    this.featureURL = "https://www.tacarez.com/feature/" + this.featureName;
-    console.log("isOwnerOrContributor:", this.isOwnerOrContributor);
+    }  else {
+      this.saveMapForm = this.createSaveMapForm();
+      this.initializeMap();
+      //set geojsonurl
+      this.geoJsonURL = "https://api.tacarez.com/api/geojson/" + this.featureName;
+      this.featureURL = "https://www.tacarez.com/feature/" + this.featureName;
+      console.log("isOwnerOrContributor:", this.isOwnerOrContributor);
+    }   
   }
 
   createSaveMapForm():FormGroup{
@@ -72,15 +75,16 @@ export class LoadEsriMapComponent implements OnInit {
       layers: [this.geojsonLayer]
     };
 
-    const m: WebMap = new WebMap(mapProperties);
+    this.map = new WebMap(mapProperties);
     const mapViewProperties = {
       container: this.mapViewEl.nativeElement,
       center: [0.1278, 51.5074],
       zoom: 10,
-      map: m
+      map: this.map
     };
 
-    const mapView: MapView = new MapView(mapViewProperties);
+    this.mapView = new MapView(mapViewProperties);
+    this.addSideButtons(this.mapView);
     let fieldConfigName:FieldConfig = new FieldConfig( {
       name: "name",
       label: "Name",
@@ -107,7 +111,7 @@ export class LoadEsriMapComponent implements OnInit {
     });
 
     const editor:Editor = new Editor({
-      view:mapView,
+      view:this.mapView,
       layerInfos: [
         {
           layer: (this.geojsonLayer as unknown as FeatureLayer),
@@ -127,13 +131,13 @@ export class LoadEsriMapComponent implements OnInit {
 
     //add editor if map owner or contributor
     if (this.isOwnerOrContributor) {
-      mapView.ui.add(editor, "top-right");
+      this.mapView.ui.add(editor, "top-right");
     }
-    
-    mapView.when(() => {
+
+    this.mapView.when(() => {
       const typeParams = {
         layer: this.geojsonLayer,
-        view: mapView,
+        view: this.mapView,
         field: "name"
       };
       return typeCreator.createRenderer(typeParams).then(response => {
@@ -142,19 +146,26 @@ export class LoadEsriMapComponent implements OnInit {
       });
     })
     .then(({ features }) => {
-      mapView.goTo(features);
+      this.mapView.goTo(features);
     })
     .catch(error => {
       console.warn(error);
+    }).finally(()=>{
     });  
+  }
 
-    const shareFeatureBtn = document.getElementById("shareFeature");
+  showMerge(){
+    this.mergeDialog = true;
+  }
+
+  addSideButtons(mapView:MapView){
+    let shareFeatureBtn = document.getElementById("shareFeature");
     mapView.ui.add(shareFeatureBtn, "top-left");
     shareFeatureBtn.addEventListener("click", () => {
       this.showShareFeatureDialog = true;
     });
 
-    const reviseFeatureBtn = document.getElementById("reviseFeature");
+    let reviseFeatureBtn = document.getElementById("reviseFeature");
     mapView.ui.add(reviseFeatureBtn, "top-left");
     reviseFeatureBtn.addEventListener("click", () => {
       //share
@@ -166,23 +177,19 @@ export class LoadEsriMapComponent implements OnInit {
     //   //share
     // });
 
-    const getDataBtn = document.getElementById("getData");
+    let getDataBtn = document.getElementById("getData");
     mapView.ui.add(getDataBtn, "top-left");
     getDataBtn.addEventListener("click", () => {
       this.showGetDataDialog = true;
     });
 
-    const saveFeatureBtn = document.getElementById("saveFeature");
+    let saveFeatureBtn = document.getElementById("saveFeature");
     if (this.isOwnerOrContributor == true) {
       mapView.ui.add(saveFeatureBtn, "top-left");
       saveFeatureBtn.addEventListener("click", () => {
         this.showSaveMap();      
       });
     }
-  }
-
-  showMerge(){
-    this.mergeDialog = true;
   }
 
   showSaveMap(){
@@ -250,6 +257,8 @@ export class LoadEsriMapComponent implements OnInit {
         this.loadingService.decrementLoading();
         this.messageService.add({severity:'success', summary:'Success', detail:'Your feature was successfully updated.'});
         this.saveMapDialog = false;
+        this.saving = false;
+        this.saveMapForm.reset();
       }, err=>{
         this.loadingService.decrementLoading();
         console.log("Error from new feature request:", err);
@@ -258,6 +267,7 @@ export class LoadEsriMapComponent implements OnInit {
         } else {
           this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while saving your feature. Please try again.'});
         }
+        this.saving = false;
       });
     })
     .catch(error => console.warn(error));

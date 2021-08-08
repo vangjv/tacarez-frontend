@@ -21,6 +21,9 @@ export class AppMenuComponent implements OnInit {
                 label: 'My Features',  routerLink: ['/myfeatures']
             },
             {
+                label: 'My Revisions',  routerLink: ['/myrevisions']
+            },
+            {
                 label: 'New Feature',  routerLink: ['/new']
             },
             {

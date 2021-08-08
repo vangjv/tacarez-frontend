@@ -1,8 +1,9 @@
 <div class="mt-5">
     <div class="col-12 md:col-6 lg:col-9 mx-auto">
         <div>
-            <h1>My features</h1>
-            <p-table [value]="features">
+            <h1>My revisions</h1>
+
+            <p-table [value]="myFeat">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Name</th>
@@ -13,13 +14,13 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-ft>
                     <tr>
-                        <td>{{ft.id}}</td>
+                        <td>{{ft.name}}</td>
                         <td>{{ft.description}}</td>
-                        <td>{{ft.lastModifiedDate | date :'short' }}</td>
+                        <td>{{ft.lastdatemodified}}</td>
                         <td style="text-align: center;">
                             <span class="pr-2 pl-2">
                                 <button pButton pRipple type="button" icon="fas fa-search" 
-                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Open/View" tooltipPosition="top" (click)="openFeature(ft.id)"></button>
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Open/View" tooltipPosition="top"></button>
                             </span>
                             <span class="pr-2 pl-2">
                                 <button pButton pRipple type="button" icon="fas fa-user-plus" 

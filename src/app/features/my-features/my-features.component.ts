@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AccountInfo } from '@azure/msal-browser';
 import { ConfirmationService, ConfirmEventType, MessageService } from 'primeng/api';
-
-
-
+import { LoadingService } from 'src/app/core/loadingspinner/loading-spinner/loading.service';
+import { Feature } from 'src/app/core/models/feature.model';
+import { OIDToken } from 'src/app/core/models/id-token.model';
+import { FeatureService } from 'src/app/core/services/feature.service';
+import { StateService } from 'src/app/core/services/state.service';
 
 @Component({
   selector: 'app-my-features',
@@ -11,16 +15,31 @@ import { ConfirmationService, ConfirmEventType, MessageService } from 'primeng/a
   styleUrls: ['./my-features.component.scss']
 })
 export class MyFeaturesComponent implements OnInit {
-
   displayModal: boolean;
-
-  // [(visible)]="display" 
   display: boolean = false;
+  currentUser:AccountInfo;
+  features:Feature[];
+  constructor(private confirmationService: ConfirmationService,  private messageService: MessageService,
+    private stateService:StateService, private featureService:FeatureService, private loadingService:LoadingService,
+    private router:Router ) {}
+
+  
+  ngOnInit(): void {
+    this.currentUser = this.stateService.getCurrentUser();
+    if (this.currentUser != null){
+      this.loadingService.incrementLoading("Retrieving features");
+      this.featureService.getFeaturesByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(features=>{
+        console.log("features:", features);
+        this.features = features;
+        this.loadingService.decrementLoading();
+      });
+    }
+  }
+
 
   showDialog() {
       this.display = true;
   }
-
 
 
   myFeat = [
@@ -66,15 +85,8 @@ export class MyFeaturesComponent implements OnInit {
     }
   ]
 
-
-
-
-  constructor(
-    private confirmationService: ConfirmationService, 
-    private messageService: MessageService
-  ) {}
-
-  ngOnInit(): void {
+  openFeature(featureName:string):void{
+    this.router.navigate(['/feature/' + featureName]);
   }
 
   showModalDialog() {

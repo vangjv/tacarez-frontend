@@ -29,11 +29,11 @@ export class AppTopBarComponent implements OnInit, OnDestroy{
 
     ngOnInit(): void {
         this.userSubscription = this.stateService.stateChanged.subscribe(state=>{
-            if (state) {
+            if (state.currentUser) {
                 this.currentUser = state.currentUser;
                 this.userMenuItems = [
                     {
-                        label: this.currentUser.name, 
+                        label: this.currentUser?.name, 
                         icon: 'pi pi-fw pi-user'
                     },
                     {
