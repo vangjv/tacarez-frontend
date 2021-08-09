@@ -76,7 +76,7 @@ export class LoadEsriMapComponent implements OnInit {
 
   createRevisionForm():FormGroup{
     return new FormGroup({
-      revisionName: new FormControl(null, [Validators.required]),
+      revisionName: new FormControl(null, [Validators.required, Validators.pattern('[a-zA-Z0-9 ]*')]),
       description: new FormControl(null, [Validators.required])
     });
   }
@@ -103,7 +103,7 @@ export class LoadEsriMapComponent implements OnInit {
       this.showRevisionDialog = false;
       this.saving = false;
       this.revisionForm.reset();
-      this.router.navigateByUrl("revision/features" + revision.featureName + "/" + revision.revisionName);
+      this.router.navigateByUrl("revision/" + revision.featureName + "/" + revision.revisionName);
     }, err=>{
       this.saving = false;
       this.loadingService.decrementLoading();
