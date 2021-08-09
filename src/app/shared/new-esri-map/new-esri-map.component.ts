@@ -19,6 +19,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { MsalService } from '@azure/msal-angular';
 import { Router } from '@angular/router';
 import { __rest } from 'tslib';
+import Compass from '@arcgis/core/widgets/Compass';
 
 @Component({
   selector: 'app-new-esri-map',
@@ -34,6 +35,7 @@ export class NewEsriMapComponent implements OnInit {
   geojsonLayer:GeoJSONLayer;
   saveMapForm:FormGroup
   saving:boolean = false;
+  tagValues:string[];
   constructor(private geoJsonHelper:GeoJsonHelperService, private stateService:StateService, private featureService:FeatureService,
     private loadingService:LoadingService, private confirmationService: ConfirmationService, private messageService: MessageService,
     private authService: MsalService, private router:Router) { }
@@ -132,6 +134,11 @@ export class NewEsriMapComponent implements OnInit {
     .catch(error => {
       console.warn(error);
     });
+    
+    let compass = new Compass({
+      view: mapView
+    });
+    mapView.ui.add(compass, "top-left");
     
     const saveFeatureBtn = document.getElementById("saveFeature");
     mapView.ui.add(saveFeatureBtn, "top-left");
