@@ -26,11 +26,19 @@ export class MyRevisionsComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = this.stateService.getCurrentUser();
     if (this.currentUser != null){
-      this.loadingService.incrementLoading("Retrieving features");
+      this.loadingService.incrementLoading("Retrieving revisions");
       this.revisionService.getRevisionsByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(revisions=>{
         console.log("revisions:", revisions);
         this.revisions = revisions;
         this.loadingService.decrementLoading();
+      }, err=>{
+        console.log('err:', err);
+        this.loadingService.decrementLoading();
+        if(err.error == "No revisions found for that user") {
+          this.revisions = [];
+        } else {
+          this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while retrieving your revisions.  Please try another name.'});
+        }
       });
     }
   }
