@@ -133,6 +133,7 @@ export class LoadEsriMapComponent implements OnInit {
       label: "Name",
       editable: true,
       editorType: "text-box",
+      required: true
     });
     let fieldConfigDescription:FieldConfig = new FieldConfig( {
       name: "description",
@@ -234,6 +235,15 @@ export class LoadEsriMapComponent implements OnInit {
         this.showSaveMap();      
       });
     }
+
+    // let consoleLogBtn = document.getElementById("consoleLog");
+    // mapView.ui.add(consoleLogBtn, "top-left");
+    // consoleLogBtn.addEventListener("click", () => {
+    //   this.geoJsonHelper.getGeoJsonFromLayer(this.geojsonLayer).then(features=>{
+    //     console.log(features);
+    //   });
+    // });
+    
   }
 
   showSaveMap(){
@@ -260,32 +270,11 @@ export class LoadEsriMapComponent implements OnInit {
     
   }
 
-  removeObjectId(attributes:any) {
-    if (attributes["OBJECTID"]) {
-      delete attributes.OBJECTID;
-    }
-    return attributes;
-  }
-
   saveMapFeature(){
     let currentUser = this.stateService.getCurrentUser();   
     this.saving = true;
-    this.loadingService.incrementLoading("Saving...");
-    this.geojsonLayer.queryFeatures().then(({ features }) => {
-      const FeatureCollection = {
-        type: "FeatureCollection",
-        features: []
-      };
-      FeatureCollection.features = features.map(
-        ({ attributes, geometry }, index) => {
-          return {
-            // id: index,
-            properties: this.removeObjectId(attributes),
-            geometry: arcgisToGeoJSON(geometry),
-            type:"Feature"
-          };
-        }
-      );
+    this.loadingService.incrementLoading("Saving...");    
+    this.geoJsonHelper.getGeoJsonFromLayer(this.geojsonLayer).then(FeatureCollection=>{
       let encodedGeoJson = btoa(JSON.stringify(FeatureCollection));
       let updateFeatureRequest:UpdateFeatureRequest = new UpdateFeatureRequest();
       let committer:GitHubUser = new GitHubUser();
@@ -313,8 +302,7 @@ export class LoadEsriMapComponent implements OnInit {
         }
         this.saving = false;
       });
-    })
-    .catch(error => console.warn(error));
+    });    
   }
 
   copyGeoJsonURLToClipBoard(){

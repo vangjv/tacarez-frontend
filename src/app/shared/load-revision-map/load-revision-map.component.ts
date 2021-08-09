@@ -244,32 +244,11 @@ export class LoadRevisionMap implements OnInit {
     
   }
 
-  removeObjectId(attributes:any) {
-    if (attributes["OBJECTID"]) {
-      delete attributes.OBJECTID;
-    }
-    return attributes;
-  }
-
   saveChanges(){
     let currentUser = this.stateService.getCurrentUser();   
     this.saving = true;
     this.loadingService.incrementLoading("Saving...");
-    this.geojsonLayer.queryFeatures().then(({ features }) => {
-      const FeatureCollection = {
-        type: "FeatureCollection",
-        features: []
-      };
-      FeatureCollection.features = features.map(
-        ({ attributes, geometry }, index) => {
-          return {
-            // id: index,
-            properties: this.removeObjectId(attributes),
-            geometry: arcgisToGeoJSON(geometry),
-            type:"Feature"
-          };
-        }
-      );
+    this.geoJsonHelper.getGeoJsonFromLayer(this.geojsonLayer).then(FeatureCollection=> {
       let encodedGeoJson = btoa(JSON.stringify(FeatureCollection));
       let updateFeatureRequest:UpdateFeatureRequest = new UpdateFeatureRequest();
       let committer:GitHubUser = new GitHubUser();
