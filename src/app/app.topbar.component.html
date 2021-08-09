@@ -12,7 +12,7 @@
         </ng-template> -->
     </div>
 
-    <a id="options-menu-button" href="#" (click)="appMain.toggleTopMenu($event)">
+    <a id="options-menu-button" (click)="appMain.toggleTopMenu($event)">
         <span class="pi pi-ellipsis-h"></span>
     </a>
     <div>
@@ -21,12 +21,12 @@
     <div id="topbar-icons" class="animated"
          [ngClass]="{'topbar-icons-visible flipInX':appMain.topMenuActive,'flipOutX':appMain.topMenuLeaving}">
 
-        <a href="#">
+        <a>
             <span class="topbar-item-text">Messages</span>
             <span class="topbar-icon pi pi-envelope animated swing"></span>
             <span class="topbar-badge animated rubberBand">5</span>
         </a>
-        <a href="#">
+        <a>
             <span class="topbar-item-text">Settings</span>
             <span class="topbar-icon pi pi-cog"></span>
         </a>
