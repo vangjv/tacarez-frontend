@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
-
+import { arcgisToGeoJSON } from "@terraformer/arcgis"
 @Injectable({
   providedIn: 'root'
 })
@@ -115,5 +115,42 @@ export class GeoJsonHelperService {
       },
       //renderer: renderer //optional
     });
+  }
+
+  getGeoJsonFromLayer(geojsonLayer:GeoJSONLayer){
+    let featureCollection = {
+      type: "FeatureCollection",
+      features: []
+    };    
+    return geojsonLayer.queryFeatures().then(({ features }) => {      
+      featureCollection.features = features.map(
+        ({ attributes, geometry }, index) => {
+          return {
+            // id: index,
+            properties: this.removeObjectIdAndReplaceNull(attributes),
+            geometry: arcgisToGeoJSON(geometry),
+            type:"Feature"
+          };
+        }
+      );
+      return featureCollection;
+    })
+    .catch(error => console.warn(error));  
+  }
+
+  removeObjectIdAndReplaceNull(attributes:any) {
+    if (attributes["OBJECTID"]) {
+      delete attributes.OBJECTID;
+    }
+    if (attributes["date"] == null || attributes["date"] == undefined) {
+      attributes.date = "";
+    }
+    if (attributes["description"] == null || attributes["description"] == undefined) {
+      attributes.description = "";
+    }
+    if (attributes["otherInformation"] == null || attributes["otherInformation"] == undefined) {
+      attributes.otherInformation = "";
+    }
+    return attributes;
   }
 }
