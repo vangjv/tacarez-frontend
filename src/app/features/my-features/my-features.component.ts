@@ -32,6 +32,14 @@ export class MyFeaturesComponent implements OnInit {
         console.log("features:", features);
         this.features = features;
         this.loadingService.decrementLoading();
+      }, err=>{
+        console.log('err:', err);
+        this.loadingService.decrementLoading();
+        if(err.error == "No features found for that user") {
+          this.features = [];
+        } else {
+          this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while retrieving your features.  Please try another name.'});
+        }
       });
     }
   }

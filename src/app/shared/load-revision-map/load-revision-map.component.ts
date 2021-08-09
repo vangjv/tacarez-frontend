@@ -281,7 +281,6 @@ export class LoadRevisionMap implements OnInit {
       updateFeatureRequest.content = encodedGeoJson;
       updateFeatureRequest.message = this.saveMapForm.value.notes;
       this.featureService.updateFeature(updateFeatureRequest, this.featureName, this.revisionName).toPromise().then(res=>{
-        console.log("response from update feature request:", res);
         this.loadingService.decrementLoading();
         this.messageService.add({severity:'success', summary:'Success', detail:'Your feature was successfully updated.'});
         this.saveMapDialog = false;

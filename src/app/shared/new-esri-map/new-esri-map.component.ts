@@ -64,8 +64,8 @@ export class NewEsriMapComponent implements OnInit {
     const m: WebMap = new WebMap(mapProperties);
     const mapViewProperties = {
       container: this.mapViewEl.nativeElement,
-      center: [0.1278, 51.5074],
-      zoom: 10,
+      center: [0.1278, 21.5074],
+      zoom: 2,
       map: m
     };
 
