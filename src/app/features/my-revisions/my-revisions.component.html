@@ -2,25 +2,26 @@
     <div class="col-12 md:col-6 lg:col-9 mx-auto">
         <div>
             <h1>My revisions</h1>
-
-            <p-table [value]="myFeat">
+            <p-table [value]="revisions">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>Name</th>
+                        <th>Feature Name</th>
+                        <th>Revison Name</th>
                         <th>Description</th>
                         <th style="width: 15%;">Last Modified</th>
-                        <th>Actions</th>
+                        <th class="text-center">Actions</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-ft>
                     <tr>
-                        <td>{{ft.name}}</td>
+                        <td>{{ft.featureName}}</td>
+                        <td>{{ft.revisionName}}</td>
                         <td>{{ft.description}}</td>
-                        <td>{{ft.lastdatemodified}}</td>
-                        <td style="text-align: center;">
+                        <td>{{ft.lastModifiedDate | date :'short' }}</td>
+                        <td class="text-center">
                             <span class="pr-2 pl-2">
                                 <button pButton pRipple type="button" icon="fas fa-search" 
-                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Open/View" tooltipPosition="top"></button>
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Open/View" tooltipPosition="top" (click)="openRevision(ft.featureName, ft.revisionName)"></button>
                             </span>
                             <span class="pr-2 pl-2">
                                 <button pButton pRipple type="button" icon="fas fa-user-plus" 
@@ -30,14 +31,6 @@
                                 <button pButton pRipple type="button" icon="fas fa-code-branch" 
                                 class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Merge Request" tooltipPosition="top" routerLink="/mergerequest"></button>
                                     <i class="pi p-mr-4" pBadge style="font-size: 2rem" value="2"></i>
-                            </span>
-                            <span class="pr-2 pl-2">
-                                <button pButton pRipple type="button" icon="fas fa-users" 
-                                class="p-button-rounded p-button-outlined p-button-raised" (click)="showDialog()" pTooltip="Stakeholders & Reviewers" tooltipPosition="top"></button>
-                            </span>
-                            <span class="pr-2 pl-2">
-                                <button pButton pRipple type="button" icon="fas fa-share-alt" 
-                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Share" tooltipPosition="top"></button>
                             </span>
                         </td>
                     </tr>

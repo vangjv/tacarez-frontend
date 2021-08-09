@@ -8,6 +8,7 @@ import { MergeRequestComponent } from './features/merge-request/merge-request.co
 import { LogOutComponent } from './features/log-out/log-out.component';
 import { LoadFeatureComponent } from './features/load-feature/load-feature.component';
 import { MyRevisionsComponent } from './features/my-revisions/my-revisions.component';
+import { LoadRevisionComponent } from './features/load-revision/load-revision.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,7 @@ const routes: Routes = [
       {path: 'new', component: NewFeatureComponent},
       {path: 'feature/:featureName', component: LoadFeatureComponent},
       {path: 'feature/:featureName/:hash', component: LoadFeatureComponent},
+      {path: 'revision/:featureName/:revisionName', component: LoadRevisionComponent},
       {path: 'feature',  redirectTo: ''},
       {path: 'myfeatures', component: MyFeaturesComponent},
       {path: 'myrevisions', component: MyRevisionsComponent},

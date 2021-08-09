@@ -16,7 +16,7 @@
             </div>
         </div>
         <p-footer>
-            <button pButton (click)="saveMapFeature()" [disabled]="saveMapForm.invalid || saving">Save</button>
+            <button pButton (click)="saveChanges()" [disabled]="saveMapForm.invalid || saving">Save</button>
         </p-footer>
     </div>    
 </p-dialog>
@@ -68,7 +68,7 @@
         <div class="p-col-12 p-md-4">
             <label class="p-mr-2">URL to share this feature</label>
             <div class="p-inputgroup">
-                <input type="text" pInputText [(ngModel)]="featureURL" [disabled]="true">   
+                <input type="text" pInputText [(ngModel)]="revisionURL" [disabled]="true">   
                 <button type="button" pButton pRipple icon="pi pi-copy" styleClass="p-button-warn" (click)="copyFeatureURLToClipBoard()"></button>      
             </div>
         </div>

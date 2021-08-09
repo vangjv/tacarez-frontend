@@ -51,6 +51,8 @@ import { LoadingService } from './core/loadingspinner/loading-spinner/loading.se
 import { LoadEsriMapComponent } from './shared/load-esri-map/load-esri-map.component';
 import { LoadFeatureComponent } from './features/load-feature/load-feature.component';
 import { MyRevisionsComponent } from './features/my-revisions/my-revisions.component';
+import { LoadRevisionMap } from './shared/load-revision-map/load-revision-map.component';
+import { LoadRevisionComponent } from './features/load-revision/load-revision.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -119,7 +121,9 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     LogOutComponent,
     NewEsriMapComponent,
     LoadEsriMapComponent,
+    LoadRevisionMap,
     LoadFeatureComponent,
+    LoadRevisionComponent,
     MyRevisionsComponent
   ],
   imports: [

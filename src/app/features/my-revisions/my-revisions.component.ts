@@ -1,5 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AccountInfo } from '@azure/msal-browser';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { LoadingService } from 'src/app/core/loadingspinner/loading-spinner/loading.service';
+import { OIDToken } from 'src/app/core/models/id-token.model';
+import { Revision } from 'src/app/core/models/revision.model';
+import { RevisionsService } from 'src/app/core/services/revisions.service';
+import { StateService } from 'src/app/core/services/state.service';
 
 @Component({
   selector: 'app-my-revisions',
@@ -9,15 +16,29 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 export class MyRevisionsComponent implements OnInit {
   displayModal: boolean;
   display: boolean = false;
-  constructor(
-    private confirmationService: ConfirmationService, 
-    private messageService: MessageService
-  ) {}
+  currentUser:AccountInfo;
+  revisions:Revision[];
+  constructor(private confirmationService: ConfirmationService,  private messageService: MessageService,
+    private stateService:StateService, private revisionService:RevisionsService, private loadingService:LoadingService,
+    private router:Router ) {}
+
+  
+  ngOnInit(): void {
+    this.currentUser = this.stateService.getCurrentUser();
+    if (this.currentUser != null){
+      this.loadingService.incrementLoading("Retrieving features");
+      this.revisionService.getRevisionsByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(revisions=>{
+        console.log("revisions:", revisions);
+        this.revisions = revisions;
+        this.loadingService.decrementLoading();
+      });
+    }
+  }
+
 
   showDialog() {
       this.display = true;
   }
-
 
 
   myFeat = [
@@ -63,17 +84,12 @@ export class MyRevisionsComponent implements OnInit {
     }
   ]
 
-
-
-
-
-
-  ngOnInit(): void {
+  openRevision(featureName:string, revisionName:string):void{
+    this.router.navigate(['/revision/' + featureName + "/" + revisionName]);
   }
 
   showModalDialog() {
     this.displayModal = true;
   }
-
 
 }

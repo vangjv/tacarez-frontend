@@ -9,7 +9,6 @@ import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import FieldConfig from '@arcgis/core/widgets/FeatureForm/FieldConfig';
 import { GeoJsonHelperService } from 'src/app/core/services/geo-json-helper.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { NewFeature, NewFeatureRequest } from 'src/app/core/models/new-feature-request.model';
 import { StateService } from 'src/app/core/services/state.service';
 import { OIDToken } from 'src/app/core/models/id-token.model';
 import { User } from 'src/app/core/models/user.model';
@@ -20,19 +19,18 @@ import { MsalService } from '@azure/msal-angular';
 import { GitHubUser, UpdateFeatureRequest } from 'src/app/core/models/update-feature-request.model';
 import { NewRevisionRequest } from 'src/app/core/models/new-revision-request.model';
 import { RevisionsService } from 'src/app/core/services/revisions.service';
-import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-load-esri-map',
-  templateUrl: './load-esri-map.component.html',
-  styleUrls: ['./load-esri-map.component.css']
+  selector: 'app-load-revision-map',
+  templateUrl: './load-revision-map.component.html',
+  styleUrls: ['./load-revision-map.component.css']
 })
 
-export class LoadEsriMapComponent implements OnInit {
+export class LoadRevisionMap implements OnInit {
   // this is needed to be able to create the MapView at the DOM element in this component
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   @Input() featureName:string;
-  @Input() branch:string = "main";
+  @Input() revisionName:string;
   @Input() geojsonLayer:GeoJSONLayer;
   @Input() isOwnerOrContributor:boolean = false;
   map: WebMap;
@@ -45,10 +43,10 @@ export class LoadEsriMapComponent implements OnInit {
   revisionForm:FormGroup;
   saving:boolean = false;
   geoJsonURL:string = "";
-  featureURL:string = "";
+  revisionURL:string = "";
   constructor(private geoJsonHelper:GeoJsonHelperService, private stateService:StateService, private featureService:FeatureService,
     private loadingService:LoadingService, private confirmationService: ConfirmationService, private messageService: MessageService,
-    private authService: MsalService, private revisionService:RevisionsService, private router:Router) { }
+    private authService: MsalService, private revisionService:RevisionsService) { }
 
   ngOnInit() {
     //load geojson data
@@ -62,8 +60,8 @@ export class LoadEsriMapComponent implements OnInit {
       this.revisionForm = this.createRevisionForm();
       this.initializeMap();
       //set geojsonurl
-      this.geoJsonURL = "https://api.tacarez.com/api/geojson/" + this.featureName;
-      this.featureURL = "https://www.tacarez.com/feature/" + this.featureName;
+      this.geoJsonURL = "https://api.tacarez.com/api/geojson/" + this.featureName + "/" + this.revisionName;
+      this.revisionURL = "https://www.tacarez.com/revision/" + this.featureName + "/" + this.revisionName;;
       console.log("isOwnerOrContributor:", this.isOwnerOrContributor);
     }   
   }
@@ -96,14 +94,13 @@ export class LoadEsriMapComponent implements OnInit {
     newRevisionRequest.featureName = this.featureName;
     newRevisionRequest.revisionName = this.revisionForm.value.revisionName; 
     newRevisionRequest.description = this.revisionForm.value.description; 
-    this.revisionService.createRevision(newRevisionRequest).toPromise().then(revision=>{
-      console.log("response from new revision request:", revision);
+    this.revisionService.createRevision(newRevisionRequest).toPromise().then(res=>{
+      console.log("response from new revision request:", res);
       this.loadingService.decrementLoading();
       this.messageService.add({severity:'success', summary:'Success', detail:'Your revision was successfully created.'});
       this.showRevisionDialog = false;
       this.saving = false;
       this.revisionForm.reset();
-      this.router.navigateByUrl("revision/features" + revision.featureName + "/" + revision.revisionName);
     }, err=>{
       this.saving = false;
       this.loadingService.decrementLoading();
@@ -208,19 +205,6 @@ export class LoadEsriMapComponent implements OnInit {
       this.showShareFeatureDialog = true;
     });
 
-    let reviseFeatureBtn = document.getElementById("reviseFeature");
-    mapView.ui.add(reviseFeatureBtn, "top-left");
-    reviseFeatureBtn.addEventListener("click", () => {
-      //share
-      this.showRevision();
-    });
-
-    // const cloneFeatureBtn = document.getElementById("cloneFeature");
-    // mapView.ui.add(cloneFeatureBtn, "top-left");
-    // cloneFeatureBtn.addEventListener("click", () => {
-    //   //share
-    // });
-
     let getDataBtn = document.getElementById("getData");
     mapView.ui.add(getDataBtn, "top-left");
     getDataBtn.addEventListener("click", () => {
@@ -267,7 +251,7 @@ export class LoadEsriMapComponent implements OnInit {
     return attributes;
   }
 
-  saveMapFeature(){
+  saveChanges(){
     let currentUser = this.stateService.getCurrentUser();   
     this.saving = true;
     this.loadingService.incrementLoading("Saving...");
@@ -296,7 +280,7 @@ export class LoadEsriMapComponent implements OnInit {
       updateFeatureRequest.committer = committer;
       updateFeatureRequest.content = encodedGeoJson;
       updateFeatureRequest.message = this.saveMapForm.value.notes;
-      this.featureService.updateFeature(updateFeatureRequest, this.featureName, this.branch).toPromise().then(res=>{
+      this.featureService.updateFeature(updateFeatureRequest, this.featureName, this.revisionName).toPromise().then(res=>{
         console.log("response from update feature request:", res);
         this.loadingService.decrementLoading();
         this.messageService.add({severity:'success', summary:'Success', detail:'Your feature was successfully updated.'});
@@ -322,7 +306,7 @@ export class LoadEsriMapComponent implements OnInit {
   }
 
   copyFeatureURLToClipBoard(){
-    this.copyTextToClipboard(this.featureURL);
+    this.copyTextToClipboard(this.revisionURL);
   }
 
   fallbackCopyTextToClipboard(text) {
