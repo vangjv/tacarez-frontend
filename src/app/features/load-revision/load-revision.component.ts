@@ -9,6 +9,7 @@ import { StateService } from 'src/app/core/services/state.service';
 import { AccountInfo } from '@azure/msal-browser';
 import { OIDToken } from 'src/app/core/models/id-token.model';
 import { RevisionsService } from 'src/app/core/services/revisions.service';
+import { Revision } from 'src/app/core/models/revision.model';
 @Component({
   selector: 'app-load-revision',
   templateUrl: './load-revision.component.html',
@@ -47,9 +48,7 @@ export class LoadRevisionComponent implements OnInit, OnDestroy {
       console.log("revision:", revision);
       console.log("feature.owner.GUID:", revision.owner.guid);
       console.log("oid:", (this.currentUser?.idTokenClaims as OIDToken)?.oid);
-      if (revision.owner.guid == (this.currentUser?.idTokenClaims as OIDToken)?.oid) {
-        this.isOwnerOrContributor = true;
-      }
+      this.isOwnerOrContributor = this.checkIfUserIsContributorOrOwner(this.currentUser,revision);
       this.geojsonLayer = this.geoJsonHelper.loadGeoJSONLayer(revision.gitHubRawURL);
       this.doneLoading = true;
       this.loadingService.decrementLoading();
@@ -57,5 +56,28 @@ export class LoadRevisionComponent implements OnInit, OnDestroy {
       this.loadingService.decrementLoading();
       this.messageService.add({severity:'info', summary: 'Info', detail: 'There was an error when trying to find your revision.  Please check the name of the feature and revision and try again.'});
     });
+  }
+
+  checkIfUserIsContributorOrOwner(currentUser:AccountInfo, revision:Revision):boolean{
+    if (revision.owner == null || revision.owner == undefined) {
+      return false;
+    }
+    if (revision.owner.guid == (this.currentUser?.idTokenClaims as OIDToken)?.oid) {
+      return true;
+    }
+    if (revision.contributors == null || revision.contributors == undefined)  {
+      return false;
+    }
+    if (revision.contributors.length == 0) {
+      return false;
+    } else {
+      let isContributor:boolean = false;
+      revision.contributors.forEach(contributor=>{
+        if (contributor.email == currentUser.username) {
+          isContributor = true;
+        }
+      });
+      return isContributor;
+    }    
   }
 }

@@ -8,7 +8,6 @@ import { MessageService } from 'primeng/api';
 import { StateService } from 'src/app/core/services/state.service';
 import { AccountInfo } from '@azure/msal-browser';
 import { OIDToken } from 'src/app/core/models/id-token.model';
-import { RevisionsService } from 'src/app/core/services/revisions.service';
 import { MergeService } from 'src/app/core/services/merge.service';
 import { MergeRequest } from 'src/app/core/models/merge-request.model';
 @Component({
@@ -51,9 +50,7 @@ export class LoadMergeRequestComponent implements OnInit, OnDestroy {
       console.log("mergeRequest:", mergeRequest);
       console.log("mergeRequest.owner.GUID:", mergeRequest.owner.guid);
       console.log("oid:", (this.currentUser?.idTokenClaims as OIDToken)?.oid);
-      if (mergeRequest.owner.guid == (this.currentUser?.idTokenClaims as OIDToken)?.oid) {
-        this.isOwnerOrContributor = true;
-      }
+      this.isOwnerOrContributor = this.checkIfUserIsContributorOrOwner(this.currentUser,mergeRequest);
       this.geojsonLayer = this.geoJsonHelper.loadGeoJSONLayer(mergeRequest.gitHubRawURL);
       this.doneLoading = true;
       this.loadingService.decrementLoading();
@@ -61,5 +58,28 @@ export class LoadMergeRequestComponent implements OnInit, OnDestroy {
       this.loadingService.decrementLoading();
       this.messageService.add({severity:'info', summary: 'Info', detail: 'There was an error when trying to find your merge request.'});
     });
+  }
+
+  checkIfUserIsContributorOrOwner(currentUser:AccountInfo, mergeRequest:MergeRequest):boolean{
+    if (mergeRequest.owner == null || mergeRequest.owner == undefined) {
+      return false;
+    }
+    if (mergeRequest.owner.guid == (this.currentUser?.idTokenClaims as OIDToken)?.oid) {
+      return true;
+    }
+    if (mergeRequest.contributors == null || mergeRequest.contributors == undefined)  {
+      return false;
+    }
+    if (mergeRequest.contributors.length == 0) {
+      return false;
+    } else {
+      let isContributor:boolean = false;
+      mergeRequest.contributors.forEach(contributor=>{
+        if (contributor.email == currentUser.username) {
+          isContributor = true;
+        }
+      });
+      return isContributor;
+    }    
   }
 }

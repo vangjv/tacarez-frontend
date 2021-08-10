@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api';
 import { StateService } from 'src/app/core/services/state.service';
 import { AccountInfo } from '@azure/msal-browser';
 import { OIDToken } from 'src/app/core/models/id-token.model';
+import { Feature } from 'src/app/core/models/feature.model';
 @Component({
   selector: 'app-load-feature',
   templateUrl: './load-feature.component.html',
@@ -47,9 +48,7 @@ export class LoadFeatureComponent implements OnInit, OnDestroy {
       console.log("feature:", feature);
       console.log("feature.owner.GUID:", feature.owner.guid);
       console.log("oid:", (this.currentUser?.idTokenClaims as OIDToken)?.oid);
-      if (feature.owner.guid == (this.currentUser?.idTokenClaims as OIDToken)?.oid) {
-        this.isOwnerOrContributor = true;
-      }
+      this.isOwnerOrContributor = this.checkIfUserIsContributorOrOwner(this.currentUser, feature);
       this.loadingService.decrementLoading();
       if (this.hash != null || this.hash != undefined) {
         this.geojsonLayer = this.geoJsonHelper.loadGeoJSONLayer(`https://raw.githubusercontent.com/dshackathon/${feature.id}/${this.hash}/data.geojson`);
@@ -65,6 +64,29 @@ export class LoadFeatureComponent implements OnInit, OnDestroy {
         this.loadingService.decrementLoading();
       }
     });
+  }
+
+  checkIfUserIsContributorOrOwner(currentUser:AccountInfo, feature:Feature):boolean{
+    if (feature.owner == null || feature.owner == undefined) {
+      return false;
+    }
+    if (feature.owner.guid == (this.currentUser?.idTokenClaims as OIDToken)?.oid) {
+      return true;
+    }
+    if (feature.contributors == null || feature.contributors == undefined)  {
+      return false;
+    }
+    if (feature.contributors.length == 0) {
+      return false;
+    } else {
+      let isContributor:boolean = false;
+      feature.contributors.forEach(contributor=>{
+        if (contributor.email == currentUser.username) {
+          isContributor = true;
+        }
+      });
+      return isContributor;
+    }    
   }
 
 }
