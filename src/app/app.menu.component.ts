@@ -1,6 +1,9 @@
-import {Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AccountInfo } from '@azure/msal-browser';
+import { Subscription } from 'rxjs';
+import { StateService } from './core/services/state.service';
 
 @Component({
     selector: 'app-menu',
@@ -31,39 +34,77 @@ import { Router } from '@angular/router';
     </p-dialog>
     `
 })
-export class AppMenuComponent implements OnInit {
+export class AppMenuComponent implements OnInit, OnDestroy {
     openMapFeatureForm:FormGroup;
     showOpenFeature:boolean = false;
     model: any[];
-    constructor(private router:Router) {
+    currentUser:AccountInfo = null;
+    stateSubscription:Subscription;
+    constructor(private router:Router, private stateService:StateService) {
 
+    }
+    ngOnDestroy(): void {
+        if (this.stateSubscription) {
+            this.stateSubscription.unsubscribe();
+        }
     }
 
     ngOnInit() {
-        this.openMapFeatureForm = this.createOpenMapFeatureForm();
-        this.model = [
-            // {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/']},
-            {
-                label: 'My Features',  routerLink: ['/myfeatures']
-            },
-            {
-                label: 'My Revisions',  routerLink: ['/myrevisions']
-            },
-            {
-                label: 'New Feature',  routerLink: ['/new']
-            },
-            {
-                label: 'Open Feature', command: ()=>{
-                    this.showOpenFeature = true;
-                }
-            },
-            {
-                label: 'Recent',  routerLink: ['/recent']
-            },
-            {
-                label: 'Explore',  routerLink: ['/explore']
+        this.stateSubscription = this.stateService.stateChanged.subscribe(state=>{
+            if (state.currentUser) {
+                this.currentUser = state.currentUser;
+                this.setSideMenuItems();
             }
-        ];
+        });
+        this.currentUser = this.stateService.getCurrentUser();
+        this.setSideMenuItems();
+        this.openMapFeatureForm = this.createOpenMapFeatureForm();        
+    }
+
+    setSideMenuItems(){
+        if (this.currentUser != null) {
+            this.model = [
+                // {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/']},
+                {
+                    label: 'My Features',  routerLink: ['/myfeatures']
+                },
+                {
+                    label: 'My Revisions',  routerLink: ['/myrevisions']
+                },
+                {
+                    label: 'My Merge Requests',  routerLink: ['/mymergerequests']
+                },
+                {
+                    label: 'New Feature',  routerLink: ['/new']
+                },
+                {
+                    label: 'Open Feature', command: ()=>{
+                        this.showOpenFeature = true;
+                    }
+                },
+                {
+                    label: 'Recent',  routerLink: ['/recent']
+                },
+                {
+                    label: 'Explore',  routerLink: ['/explore']
+                }
+            ];
+        } else {
+            this.model = [
+                {
+                    label: 'New Feature',  routerLink: ['/new']
+                },
+                {
+                    label: 'Open Feature', command: ()=>{
+                        this.showOpenFeature = true;
+                    }
+                },
+                {
+                    label: 'Explore',  routerLink: ['/explore']
+                }
+            ];
+        }
+        
     }
 
     createOpenMapFeatureForm():FormGroup{

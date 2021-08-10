@@ -53,6 +53,10 @@ import { LoadFeatureComponent } from './features/load-feature/load-feature.compo
 import { MyRevisionsComponent } from './features/my-revisions/my-revisions.component';
 import { LoadRevisionMap } from './shared/load-revision-map/load-revision-map.component';
 import { LoadRevisionComponent } from './features/load-revision/load-revision.component';
+import { MergeService } from './core/services/merge.service';
+import { MyMergeRequestsComponent } from './features/my-merge-requests/my-merge-requests.component';
+import { LoadMergeRequestComponent } from './features/load-merge-request/load-merge-request.component';
+import { LoadMergeRequestMap } from './shared/load-merge-request-map/load-merge-request-map.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -124,7 +128,10 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     LoadRevisionMap,
     LoadFeatureComponent,
     LoadRevisionComponent,
-    MyRevisionsComponent
+    MyRevisionsComponent,
+    MyMergeRequestsComponent,
+    LoadMergeRequestComponent,
+    LoadMergeRequestMap
   ],
   imports: [
     BrowserModule,
@@ -178,7 +185,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     BreadcrumbService,
     ConfirmationService,
     MessageService,
-    LoadingService
+    LoadingService,
+    MergeService
   ],
   bootstrap: [AppComponent, MsalRedirectComponent]
 })
