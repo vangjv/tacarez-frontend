@@ -21,6 +21,7 @@ import { GitHubUser, UpdateFeatureRequest } from 'src/app/core/models/update-fea
 import { NewRevisionRequest } from 'src/app/core/models/new-revision-request.model';
 import { RevisionsService } from 'src/app/core/services/revisions.service';
 import { Router } from '@angular/router';
+import Compass from '@arcgis/core/widgets/Compass';
 
 @Component({
   selector: 'app-load-esri-map',
@@ -127,7 +128,14 @@ export class LoadEsriMapComponent implements OnInit {
     };
 
     this.mapView = new MapView(mapViewProperties);
+
+    let compass = new Compass({
+      view: this.mapView
+    });
+    this.mapView.ui.add(compass, "top-left");
+
     this.addSideButtons(this.mapView);
+    
     let fieldConfigName:FieldConfig = new FieldConfig( {
       name: "name",
       label: "Name",

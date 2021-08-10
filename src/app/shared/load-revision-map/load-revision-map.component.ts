@@ -19,6 +19,7 @@ import { MsalService } from '@azure/msal-angular';
 import { GitHubUser, UpdateFeatureRequest } from 'src/app/core/models/update-feature-request.model';
 import { NewRevisionRequest } from 'src/app/core/models/new-revision-request.model';
 import { RevisionsService } from 'src/app/core/services/revisions.service';
+import Compass from '@arcgis/core/widgets/Compass';
 
 @Component({
   selector: 'app-load-revision-map',
@@ -124,7 +125,14 @@ export class LoadRevisionMap implements OnInit {
     };
 
     this.mapView = new MapView(mapViewProperties);
+
+    let compass = new Compass({
+      view: this.mapView
+    });
+    this.mapView.ui.add(compass, "top-left");
+
     this.addSideButtons(this.mapView);
+    
     let fieldConfigName:FieldConfig = new FieldConfig( {
       name: "name",
       label: "Name",

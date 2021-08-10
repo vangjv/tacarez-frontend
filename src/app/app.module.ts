@@ -22,6 +22,7 @@ import {DialogModule} from 'primeng/dialog';
 import {InputTextModule} from 'primeng/inputtext';
 import {MenuModule} from 'primeng/menu';
 import {ToastModule} from 'primeng/toast';
+import {ChipsModule} from 'primeng/chips';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -158,7 +159,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     DialogModule,
     InputTextModule,
     MenuModule,
-    ToastModule
+    ToastModule,
+    ChipsModule
   ],
   providers: [
     // {
