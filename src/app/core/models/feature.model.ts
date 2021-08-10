@@ -9,8 +9,8 @@ export class Feature {
     createdDate?:Date;
     lastModifiedDate?:Date;
     owner?: User;
-    contributors?: any;
-    stakeholders?: any;
+    contributors?: User[];
+    stakeholders?: User[];
     branches?: any;
     tags?: string[];
 }
