@@ -8,6 +8,9 @@ import { Feature } from 'src/app/core/models/feature.model';
 import { OIDToken } from 'src/app/core/models/id-token.model';
 import { FeatureService } from 'src/app/core/services/feature.service';
 import { StateService } from 'src/app/core/services/state.service';
+import { Stakeholders } from 'src/app/core/models/stakeholders.model';
+import { StakeholdersService } from 'src/app/core/services/stakeholders.service';
+import { User } from 'src/app/core/models/user.model';
 
 @Component({
   selector: 'app-my-features',
@@ -19,9 +22,19 @@ export class MyFeaturesComponent implements OnInit {
   display: boolean = false;
   currentUser:AccountInfo;
   features:Feature[];
-  constructor(private confirmationService: ConfirmationService,  private messageService: MessageService,
-    private stateService:StateService, private featureService:FeatureService, private loadingService:LoadingService,
-    private router:Router ) {}
+  stakeholderForm: FormGroup;
+  selectedFeature: Feature;
+  saving: boolean = false;
+
+  constructor(
+    private confirmationService: ConfirmationService, 
+    private messageService: MessageService,
+    private stateService:StateService, 
+    private featureService:FeatureService, 
+    private loadingService:LoadingService,
+    private router:Router,
+    private stakeholdersService:StakeholdersService
+    ) {}
 
   
   ngOnInit(): void {
@@ -34,11 +47,69 @@ export class MyFeaturesComponent implements OnInit {
         this.loadingService.decrementLoading();
       });
     }
+
+    this.createFormGroup();
+
   }
 
 
-  showDialog() {
+  showDialog(feature:Feature) {
       this.display = true;
+      this.selectedFeature = feature;
+      console.log(this.selectedFeature);
+  }
+
+
+
+  //FormGroup
+  createFormGroup(){
+    this.stakeholderForm = new FormGroup({
+      firstName: new FormControl(null, [Validators.required]),
+      lastName: new FormControl(null, [Validators.required]),
+      email: new FormControl(null, [Validators.required])
+    });
+  }
+
+
+  //PUT add stakeholder
+  addStakeholder(){
+    this.saving = true;
+    let stakeholderList = this.selectedFeature.stakeholders || [];
+    let addStakeholder = new User();
+    addStakeholder.firstName = this.stakeholderForm.value.firstName;
+    addStakeholder.lastName = this.stakeholderForm.value.lastName;
+    addStakeholder.email = this.stakeholderForm.value.email;
+    stakeholderList.push(addStakeholder);
+    this.stakeholdersService.updateStakeholder(stakeholderList, this.selectedFeature.id).toPromise().then(sh=>{
+      console.log("added a stakeholder:", sh);
+      this.stakeholderForm.reset();
+      // this.refreshStakeholdersAndSelectedFeatures();
+      this.saving = false;
+    });
+  }
+
+  refreshStakeholdersAndSelectedFeatures(){
+    this.loadingService.incrementLoading("Retrieving features");
+    this.featureService.getFeaturesByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(features=>{
+      console.log("features:", features);
+      this.features = features;
+      this.loadingService.decrementLoading();
+    });
+    this.features.forEach(feature=>{
+      if (feature.id == this.selectedFeature.id) {
+        this.selectedFeature = feature;
+      }
+    })
+
+  }
+
+  deleteStakeholder(index){
+    this.selectedFeature.stakeholders.splice(index,1);
+    this.stakeholdersService.updateStakeholder(this.selectedFeature.stakeholders, this.selectedFeature.id).toPromise().then(sh=>{
+      console.log("delete a stakeholder:", sh);
+      this.stakeholderForm.reset();
+    });
+    console.log(this.selectedFeature.stakeholders[index])
   }
 
 
