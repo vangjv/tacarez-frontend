@@ -8,7 +8,7 @@
                         <th>Name</th>
                         <th>Description</th>
                         <th style="width: 15%;">Last Modified</th>
-                        <th>Actions</th>
+                        <th style="text-align: center;">Actions</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-ft>
@@ -25,18 +25,14 @@
                                 <button pButton pRipple type="button" icon="fas fa-user-plus" 
                                 class="p-button-rounded p-button-outlined p-button-raised" (click)="showContributorDialog(ft)" pTooltip="Contributors" tooltipPosition="top"></button>
                             </span>
-                            <span class="pr-2 pl-2">
+                            <!-- <span class="pr-2 pl-2">
                                 <button pButton pRipple type="button" icon="fas fa-code-branch" 
                                 class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Merge Request" tooltipPosition="top" routerLink="/mergerequest"></button>
                                     <i class="pi p-mr-4" pBadge style="font-size: 2rem" value="2"></i>
-                            </span>
+                            </span> -->
                             <span class="pr-2 pl-2">
                                 <button pButton pRipple type="button" icon="fas fa-users" 
                                 class="p-button-rounded p-button-outlined p-button-raised" (click)="showStakeholderDialog(ft)" pTooltip="Stakeholders & Reviewers" tooltipPosition="top"></button>
-                            </span>
-                            <span class="pr-2 pl-2">
-                                <button pButton pRipple type="button" icon="fas fa-share-alt" 
-                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Share" tooltipPosition="top"></button>
                             </span>
                         </td>
                     </tr>
@@ -116,47 +112,42 @@
 <!-------Contributor Modal------->
 <p-dialog [(visible)]="contributorDisplay"
 [closeOnEscape]="true" [transitionOptions]="'100ms'" [resizable]="false" 
-[style]="{width: '50vw'}" [baseZIndex]="10000" [maximizable]="true" header="Contributors" scrollHeight="flex">
+[style]="{width: '50vw'}" appendTo="body" [maximizable]="true" header="Contributors" scrollHeight="flex">
         <p-table [value]="selectedFeature?.contributors" [scrollable]="true" scrollHeight="flex" height="300px">
             <ng-template pTemplate="header">
                 <tr>
-                    <th>Name</th>
                     <th>Email</th>
-                    <th>Actions</th>
+                    <th style="text-align: center;">Actions</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-co let-rowIndex="rowIndex">
                 <tr>
-                    <td> </td>
                     <td>{{co.email}}</td>
-                    <td>
+                    <td style="text-align: center;">
                         <span class="text-right ml-5">
                             <button (click)="deleteContributors(rowIndex)" pButton pRipple type="button" icon="pi pi-trash"
                              class="p-button-rounded p-button-outlined p-button-raised p-button-danger">
                             </button>
                         </span>
-                        </td>
+                    </td>
                 </tr>
             </ng-template>
         </p-table>
-
-
         <ng-template pTemplate="footer">
             <form [formGroup]="contributorForm">
                 <div class="row flex">
                     <div class="col pl-3">
                         <div class="p-inputgroup mt-1">
                             <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
-                            <input type="text" id="email" pInputText formControlName="email" placeholder="Email" [style]="{width:'100%'}">       
+                            <input type="text" id="email" pInputText formControlName="email" placeholder="Email" [style]="{width:'100%'}" (keyup.enter)="addContributor()">       
                         </div>
-                    </div>
-        
+                    </div>        
                     <div class="col-2 text-right pl-3 mt-1">
                         <button pButton type="button"(click)="addContributor()" [disabled]="saving==true || contributorForm.invalid" label="Add" [style]="{width:'100%'}"></button> 
                     </div>
                 </div>
                 <div class="mt-3 pt-3">
-                    <button pButton type="button" (click)="display=false" label="Close" [style]="{width:'40%'}"></button>
+                    <button pButton type="button" (click)="closeContributorDialog()" label="Close" [style]="{width:'40%'}"></button>
                 </div>
             </form>
         </ng-template>

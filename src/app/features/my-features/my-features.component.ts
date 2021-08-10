@@ -85,13 +85,15 @@ export class MyFeaturesComponent implements OnInit {
 //PUT for stakeholder
   addStakeholder(){
     this.saving = true;
-    let stakeholderList = this.selectedFeature.stakeholders || [];
+    if (this.selectedFeature.stakeholders == null || this.selectedFeature.stakeholders == undefined) {
+      this.selectedFeature.stakeholders = [];
+    } 
     let addStakeholder = new User();
     addStakeholder.firstName = this.stakeholderForm.value.firstName;
     addStakeholder.lastName = this.stakeholderForm.value.lastName;
     addStakeholder.email = this.stakeholderForm.value.email;
-    stakeholderList.push(addStakeholder);
-    this.stakeholdersService.updateStakeholder(stakeholderList, this.selectedFeature.id).toPromise().then(sh=>{
+    this.selectedFeature.stakeholders.push(addStakeholder);
+    this.stakeholdersService.updateStakeholder(this.selectedFeature.stakeholders, this.selectedFeature.id).toPromise().then(sh=>{
       console.log("added a stakeholder:", sh);
       this.stakeholderForm.reset();
       // this.refreshStakeholdersAndSelectedFeatures();
@@ -146,12 +148,14 @@ showContributorDialog(feature:Feature) {
 //PUT for Contributor
   addContributor(){
     this.saving = true;
-    let contributorList = this.selectedFeature.contributors || [];
+    if (this.selectedFeature.contributors == null || this.selectedFeature.contributors == undefined) {
+      this.selectedFeature.contributors = [];
+    } 
     let addContributor = new User();
     addContributor.email = this.contributorForm.value.email;
 
-    contributorList.push(addContributor);
-    this.contributorsService.updateContributor(contributorList, this.selectedFeature.id).toPromise().then(con=>{
+    this.selectedFeature.contributors.push(addContributor);
+    this.contributorsService.updateContributor(this.selectedFeature.contributors, this.selectedFeature.id).toPromise().then(con=>{
       console.log("added a contributor:", con);
       this.contributorForm.reset();
       // this.refreshStakeholdersAndSelectedFeatures();
@@ -185,11 +189,10 @@ showContributorDialog(feature:Feature) {
     console.log(this.selectedFeature.contributors[index])
   }
 
-
-
-
-//////////////////////////////////////
-
+  closeContributorDialog(){
+    this.contributorForm.reset();
+    this.contributorDisplay=false;this.contributorForm.reset();    
+  }
 
   openFeature(featureName:string):void{
     this.router.navigate(['/feature/' + featureName]);

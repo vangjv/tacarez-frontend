@@ -191,6 +191,7 @@ export class NewEsriMapComponent implements OnInit {
       newFeature.Id = this.saveMapForm.value.name;
       newFeature.Description = this.saveMapForm.value.description;
       newFeature.Owner = mapOwner
+      newFeature.Tags = this.saveMapForm.value.tags;
       let newFeatureRequest:NewFeatureRequest = new NewFeatureRequest();
       newFeatureRequest.feature = newFeature;
       newFeatureRequest.message = "Initial map";
