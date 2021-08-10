@@ -35,7 +35,6 @@ export class NewEsriMapComponent implements OnInit {
   geojsonLayer:GeoJSONLayer;
   saveMapForm:FormGroup
   saving:boolean = false;
-  tagValues:string[];
   constructor(private geoJsonHelper:GeoJsonHelperService, private stateService:StateService, private featureService:FeatureService,
     private loadingService:LoadingService, private confirmationService: ConfirmationService, private messageService: MessageService,
     private authService: MsalService, private router:Router) { }
