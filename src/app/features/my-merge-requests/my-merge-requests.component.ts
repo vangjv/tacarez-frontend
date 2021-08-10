@@ -5,21 +5,22 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { LoadingService } from 'src/app/core/loadingspinner/loading-spinner/loading.service';
 import { OIDToken } from 'src/app/core/models/id-token.model';
 import { MergeRequestRequest } from 'src/app/core/models/merge-request-request.model';
+import { MergeRequest } from 'src/app/core/models/merge-request.model';
 import { Revision } from 'src/app/core/models/revision.model';
 import { MergeService } from 'src/app/core/services/merge.service';
 import { RevisionsService } from 'src/app/core/services/revisions.service';
 import { StateService } from 'src/app/core/services/state.service';
 
 @Component({
-  selector: 'app-my-revisions',
-  templateUrl: './my-revisions.component.html',
-  styleUrls: ['./my-revisions.component.scss']
+  selector: 'app-my-merge-requests',
+  templateUrl: './my-merge-requests.component.html',
+  styleUrls: ['./my-merge-requests.component.scss']
 })
-export class MyRevisionsComponent implements OnInit {
+export class MyMergeRequestsComponent implements OnInit {
   displayModal: boolean;
   display: boolean = false;
   currentUser:AccountInfo;
-  revisions:Revision[];
+  mergeRequests:MergeRequest[];
   selectedRevision:Revision;
   showMergeRequestDialog:boolean = false;
   mergeOptions:any[] = [{
@@ -29,7 +30,7 @@ export class MyRevisionsComponent implements OnInit {
   requestingMerge:boolean = false;
   mergeSelection:string = "";
   constructor(private confirmationService: ConfirmationService,  private messageService: MessageService,
-    private stateService:StateService, private revisionService:RevisionsService, private loadingService:LoadingService,
+    private stateService:StateService, private loadingService:LoadingService,
     private router:Router, private mergeService:MergeService ) {}
 
   
@@ -37,18 +38,14 @@ export class MyRevisionsComponent implements OnInit {
     this.currentUser = this.stateService.getCurrentUser();
     if (this.currentUser != null){
       this.loadingService.incrementLoading("Retrieving revisions");
-      this.revisionService.getRevisionsByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(revisions=>{
-        console.log("revisions:", revisions);
-        this.revisions = revisions;
+      this.mergeService.getMergeRequestsByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(mergeRequests=>{
+        console.log("mergeRequests:", mergeRequests);
+        this.mergeRequests = mergeRequests;
         this.loadingService.decrementLoading();
       }, err=>{
         console.log('err:', err);
         this.loadingService.decrementLoading();
-        if(err.error == "No revisions found for that user") {
-          this.revisions = [];
-        } else {
-          this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while retrieving your revisions.  Please try another name.'});
-        }
+        this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while retrieving your revisions.  Please try another name.'});
       });
     }
   }
@@ -102,8 +99,8 @@ export class MyRevisionsComponent implements OnInit {
     }
   ]
 
-  openRevision(featureName:string, revisionName:string):void{
-    this.router.navigate(['/revision/' + featureName + "/" + revisionName]);
+  reviewMergeMap(featureName:string, mergeId:string):void{
+    this.router.navigate(['/mergerequest/' + featureName + "/" + mergeId]);
   }
 
   showModalDialog() {
