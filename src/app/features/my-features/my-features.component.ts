@@ -8,9 +8,9 @@ import { Feature } from 'src/app/core/models/feature.model';
 import { OIDToken } from 'src/app/core/models/id-token.model';
 import { FeatureService } from 'src/app/core/services/feature.service';
 import { StateService } from 'src/app/core/services/state.service';
-import { Stakeholders } from 'src/app/core/models/stakeholders.model';
 import { StakeholdersService } from 'src/app/core/services/stakeholders.service';
 import { User } from 'src/app/core/models/user.model';
+import { ContributorsService } from 'src/app/core/services/contributors.service';
 
 @Component({
   selector: 'app-my-features',
@@ -20,9 +20,11 @@ import { User } from 'src/app/core/models/user.model';
 export class MyFeaturesComponent implements OnInit {
   displayModal: boolean;
   display: boolean = false;
+  contributorDisplay: boolean = false;
   currentUser:AccountInfo;
   features:Feature[];
   stakeholderForm: FormGroup;
+  contributorForm: FormGroup;
   selectedFeature: Feature;
   saving: boolean = false;
 
@@ -33,7 +35,8 @@ export class MyFeaturesComponent implements OnInit {
     private featureService:FeatureService, 
     private loadingService:LoadingService,
     private router:Router,
-    private stakeholdersService:StakeholdersService
+    private stakeholdersService:StakeholdersService,
+    private contributorsService:ContributorsService
     ) {}
 
   
@@ -49,19 +52,12 @@ export class MyFeaturesComponent implements OnInit {
     }
 
     this.createFormGroup();
-
-  }
-
-
-  showDialog(feature:Feature) {
-      this.display = true;
-      this.selectedFeature = feature;
-      console.log(this.selectedFeature);
+    this.createContributorFormGroup();
   }
 
 
 
-  //FormGroup
+//FormGroup Stakeholder
   createFormGroup(){
     this.stakeholderForm = new FormGroup({
       firstName: new FormControl(null, [Validators.required]),
@@ -70,8 +66,15 @@ export class MyFeaturesComponent implements OnInit {
     });
   }
 
+// open up Stakeholder modal
+  showStakeholderDialog(feature:Feature) {
+      this.display = true;
+      this.selectedFeature = feature;
+      console.log(this.selectedFeature);
+  }
 
-  //PUT add stakeholder
+
+//PUT for stakeholder
   addStakeholder(){
     this.saving = true;
     let stakeholderList = this.selectedFeature.stakeholders || [];
@@ -88,6 +91,7 @@ export class MyFeaturesComponent implements OnInit {
     });
   }
 
+// Refresh stakeholder after being added
   refreshStakeholdersAndSelectedFeatures(){
     this.loadingService.incrementLoading("Retrieving features");
     this.featureService.getFeaturesByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(features=>{
@@ -103,6 +107,7 @@ export class MyFeaturesComponent implements OnInit {
 
   }
 
+// DELETE stakeholders
   deleteStakeholder(index){
     this.selectedFeature.stakeholders.splice(index,1);
     this.stakeholdersService.updateStakeholder(this.selectedFeature.stakeholders, this.selectedFeature.id).toPromise().then(sh=>{
@@ -113,48 +118,70 @@ export class MyFeaturesComponent implements OnInit {
   }
 
 
-  myFeat = [
-    {
-      name: 'Desforestation',
-      description: 'Natural or human actions in the removal of forest',
-      lastdatemodified: 'Aug.10.2021'
-    },
-    {
-      name: 'Nest sightings',
-      description: 'Location of Chimp nests',
-      lastdatemodified: 'Aug.22.2021'
-    },
-    {
-      name: 'Poachers observed',
-      description: 'a person who illegally hunts game, fish, etc, on someone elses property',
-      lastdatemodified: 'Aug.22.2021'
-    },    {
-      name: 'Expanded farmland',
-      description: 'Increase in farmland',
-      lastdatemodified: 'Aug.12.2021'
-    }
 
-  ]
+  ///////////////////////////////////
 
-// Stakeholder/Reviewer modal data
-  reviewerData = [
-    {
-      name: 'James Bond',
-      email: 'james.bond@gmail.com'
-    },
-    {
-      name: 'Professor Xavier',
-      email: 'prof.x@gmail.com'
-    },
-    {
-      name: 'Bruce Wayne',
-      email: 'bruce@gmail.com'
-    },
-    {
-      name: 'Tony Stark',
-      email: 't.stark@gmail.com'
-    }
-  ]
+// open up Contributor modal
+showContributorDialog(feature:Feature) {
+  this.contributorDisplay = true;
+  this.selectedFeature = feature;
+  console.log(this.selectedFeature);
+}
+
+//FormGroup Contributor
+  createContributorFormGroup(){
+    this.contributorForm = new FormGroup({
+      email: new FormControl(null, [Validators.required])
+    });
+  }
+
+//PUT for Contributor
+  addContributor(){
+    this.saving = true;
+    let contributorList = this.selectedFeature.contributors || [];
+    let addContributor = new User();
+    addContributor.email = this.contributorForm.value.email;
+
+    contributorList.push(addContributor);
+    this.contributorsService.updateContributor(contributorList, this.selectedFeature.id).toPromise().then(con=>{
+      console.log("added a contributor:", con);
+      this.contributorForm.reset();
+      // this.refreshStakeholdersAndSelectedFeatures();
+      this.saving = false;
+    });
+  }
+
+// Refresh stakeholder after being added
+  refreshContributorAndSelectedFeatures(){
+    this.loadingService.incrementLoading("Retrieving features");
+    this.featureService.getFeaturesByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(features=>{
+      console.log("features:", features);
+      this.features = features;
+      this.loadingService.decrementLoading();
+    });
+    this.features.forEach(feature=>{
+      if (feature.id == this.selectedFeature.id) {
+        this.selectedFeature = feature;
+      }
+    })
+
+  }
+
+// DELETE stakeholders
+  deleteContributors(index){
+    this.selectedFeature.contributors.splice(index,1);
+    this.contributorsService.updateContributor(this.selectedFeature.contributors, this.selectedFeature.id).toPromise().then(con=>{
+      console.log("delete a contributor:", con);
+      this.contributorForm.reset();
+    });
+    console.log(this.selectedFeature.contributors[index])
+  }
+
+
+
+
+//////////////////////////////////////
+
 
   openFeature(featureName:string):void{
     this.router.navigate(['/feature/' + featureName]);
@@ -163,6 +190,15 @@ export class MyFeaturesComponent implements OnInit {
   showModalDialog() {
     this.displayModal = true;
   }
+
+
+
+
+
+
+
+
+
 
 
 }
