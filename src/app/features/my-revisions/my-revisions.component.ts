@@ -5,6 +5,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { LoadingService } from 'src/app/core/loadingspinner/loading-spinner/loading.service';
 import { OIDToken } from 'src/app/core/models/id-token.model';
 import { MergeRequestRequest } from 'src/app/core/models/merge-request-request.model';
+import { MergeRequest } from 'src/app/core/models/merge-request.model';
 import { Revision } from 'src/app/core/models/revision.model';
 import { MergeService } from 'src/app/core/services/merge.service';
 import { RevisionsService } from 'src/app/core/services/revisions.service';
@@ -28,6 +29,7 @@ export class MyRevisionsComponent implements OnInit {
   }];
   requestingMerge:boolean = false;
   mergeSelection:string = "";
+  mergeNotes:string = "";
   constructor(private confirmationService: ConfirmationService,  private messageService: MessageService,
     private stateService:StateService, private revisionService:RevisionsService, private loadingService:LoadingService,
     private router:Router, private mergeService:MergeService ) {}
@@ -113,13 +115,14 @@ export class MyRevisionsComponent implements OnInit {
   createMergeRequest(){
     this.requestingMerge = true;
     this.loadingService.incrementLoading("Submitting merge request");
-    let mergeRequestRequest:MergeRequestRequest = new MergeRequestRequest(this.selectedRevision.featureName, this.selectedRevision.revisionName);
+    let mergeRequestRequest:MergeRequestRequest = new MergeRequestRequest(this.selectedRevision.featureName, this.selectedRevision.revisionName, this.mergeNotes);
     this.mergeService.createMergeRequest(mergeRequestRequest).toPromise().then(res=>{
       this.requestingMerge = false;
       this.loadingService.decrementLoading();
       this.messageService.add({severity:'success', summary:'Success', detail:'Your merge request was successfully created and sent to the owner of the feature.'});
       this.showMergeRequestDialog = false;
       this.mergeSelection = null;
+      this.mergeNotes = "";
     }, err=>{
       this.loadingService.decrementLoading();
       this.requestingMerge = false;
@@ -132,5 +135,6 @@ export class MyRevisionsComponent implements OnInit {
     this.selectedRevision = revision;
     this.showMergeRequestDialog = true;
   }
+
 
 }

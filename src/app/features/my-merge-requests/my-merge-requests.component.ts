@@ -27,8 +27,11 @@ export class MyMergeRequestsComponent implements OnInit {
     "name" : "Request merge",
     "value" : "Request merge"
   }];
+  mergeNotes:string = "";
   requestingMerge:boolean = false;
   mergeSelection:string = "";
+  showMergeNotesDialog:boolean = false;
+  selectedMergeRequestNotes:string = "";
   constructor(private confirmationService: ConfirmationService,  private messageService: MessageService,
     private stateService:StateService, private loadingService:LoadingService,
     private router:Router, private mergeService:MergeService ) {}
@@ -110,13 +113,14 @@ export class MyMergeRequestsComponent implements OnInit {
   createMergeRequest(){
     this.requestingMerge = true;
     this.loadingService.incrementLoading("Submitting merge request");
-    let mergeRequestRequest:MergeRequestRequest = new MergeRequestRequest(this.selectedRevision.featureName, this.selectedRevision.revisionName);
+    let mergeRequestRequest:MergeRequestRequest = new MergeRequestRequest(this.selectedRevision.featureName, this.selectedRevision.revisionName, this.mergeNotes);
     this.mergeService.createMergeRequest(mergeRequestRequest).toPromise().then(res=>{
       this.requestingMerge = false;
       this.loadingService.decrementLoading();
       this.messageService.add({severity:'success', summary:'Success', detail:'Your merge request was successfully created and sent to the owner of the feature.'});
       this.showMergeRequestDialog = false;
       this.mergeSelection = null;
+      this.mergeNotes = "";
     }, err=>{
       this.loadingService.decrementLoading();
       this.requestingMerge = false;
@@ -130,4 +134,8 @@ export class MyMergeRequestsComponent implements OnInit {
     this.showMergeRequestDialog = true;
   }
 
+  openNotes(merge:MergeRequest){
+    this.selectedMergeRequestNotes = merge.mergeRequesterNotes ?? "";
+    this.showMergeNotesDialog = true;
+  }
 }

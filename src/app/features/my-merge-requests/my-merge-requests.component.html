@@ -7,6 +7,7 @@
                     <tr>
                         <th>Feature Name</th>
                         <th>Revison Name</th>
+                        <th class="text-center">Notes from requestor</th>
                         <th>Status</th>
                         <th style="width: 15%;">Created date</th>
                         <th class="text-center">Actions</th>
@@ -16,6 +17,12 @@
                     <tr>
                         <td>{{merge.featureName}}</td>
                         <td>{{merge.revisionName}}</td>
+                        <td class="text-center">
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="far fa-comment" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="View notes" tooltipPosition="top" (click)="openNotes(merge)"></button>
+                            </span>
+                        </td>
                         <td>{{merge.status ?? "Review not started"}}</td>
                         <td>{{merge.createdDate | date :'short' }}</td>
                         <td class="text-center">
@@ -65,6 +72,11 @@
             <div class="p-fluid">
                 <div class="p-field mb-3">
                     <p-dropdown [options]="mergeOptions" [(ngModel)]="mergeSelection" optionLabel="name" optionValue="value" placeholder="Select an option"></p-dropdown>
+                </div>
+            </div>
+            <div class="p-fluid" *ngIf="mergeSelection == 'Request merge'">
+                <div class="p-field mb-3">
+                    <textarea pInputTextarea [(ngModel)]="mergeNotes" class="w-100"></textarea>
                 </div>
             </div>
         </div>
@@ -129,3 +141,19 @@
         </ng-template>
 </p-dialog>
 
+
+<!-- Merge Notes Modal -->
+<p-dialog header="Notes from merge requestor" [(visible)]="showMergeNotesDialog" [style]="{width: '50vw'}">
+    <div class="grid">
+        <div class="col-12">
+            <div class="p-fluid">
+                <div class="p-field mb-3">
+                    <textarea pInputTextarea [(ngModel)]="selectedMergeRequestNotes" class="w-full" style="resize: none;" [rows]="5"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p-footer>
+        <button pButton (click)="showMergeNotesDialog = false">Close</button>
+    </p-footer>
+</p-dialog>

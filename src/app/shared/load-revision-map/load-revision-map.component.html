@@ -63,10 +63,10 @@
 </p-dialog>
 
 
-<p-dialog header="Share feature" [(visible)]="showShareFeatureDialog" [style]="{width: '50vw'}">
+<p-dialog header="Share revision" [(visible)]="showShareFeatureDialog" [style]="{width: '50vw'}">
     <div class="p-grid">
         <div class="p-col-12 p-md-4">
-            <label class="p-mr-2">URL to share this feature</label>
+            <label class="p-mr-2">URL to share this revision</label>
             <div class="p-inputgroup">
                 <input type="text" pInputText [(ngModel)]="revisionURL" [disabled]="true">   
                 <button type="button" pButton pRipple icon="pi pi-copy" styleClass="p-button-warn" (click)="copyFeatureURLToClipBoard()"></button>      
@@ -82,7 +82,7 @@
 <div id="saveFeature" class="esri-widget esri-widget--button esri-widget esri-interactive" title="Save changes">
     <span class="esri-icon-save"></span>
 </div>
-<div id="shareFeature" class="esri-widget esri-widget--button esri-widget esri-interactive" title="Share feature">
+<div id="shareFeature" class="esri-widget esri-widget--button esri-widget esri-interactive" title="Share revision">
     <span class="esri-icon-share"></span>
 </div>
 <div id="reviseFeature" class="esri-widget esri-widget--button esri-widget esri-interactive" title="Revise feature">

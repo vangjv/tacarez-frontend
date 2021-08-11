@@ -64,6 +64,12 @@
                     <p-dropdown [options]="mergeOptions" [(ngModel)]="mergeSelection" optionLabel="name" optionValue="value" placeholder="Select an option"></p-dropdown>
                 </div>
             </div>
+            <div class="p-fluid" *ngIf="mergeSelection == 'Request merge'">
+                <label class="p-mr-2">Merge notes to feature owner</label>
+                <div class="p-field mb-3">
+                    <textarea pInputTextarea [(ngModel)]="mergeNotes" class="w-full" style="resize: none;" [rows]="5"></textarea>
+                </div>
+            </div>
         </div>
     </div>
     <p-footer>
@@ -107,15 +113,13 @@
                         <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
                         <input type="text" pInputText placeholder="Username" [style]="{width:'100%'}">         
                     </div>
-                </div>
-            
+                </div>            
                 <div class="col pl-3">
                     <div class="p-inputgroup mt-1">
                         <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
                         <input type="text" pInputText placeholder="Email" [style]="{width:'100%'}">       
                     </div>
-                </div>
-    
+                </div>    
                 <div class="col-2 text-right pl-3 mt-1">
                     <button pButton type="button" label="Add" [style]="{width:'100%'}"></button> 
                 </div>
