@@ -79,7 +79,7 @@
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Role</th>                 
-                <th>Actions</th>
+                <th width="10%"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-stakeholder let-i="rowIndex">
@@ -88,7 +88,9 @@
                 <td>{{stakeholder.lastName}}</td>
                 <td>{{stakeholder.email}}</td>
                 <td>
-                    {{stakeholder.role}}
+                    <!-- {{stakeholder.role}} -->
+                    <p-dropdown [options]="envelopeRoles" optionLabel="label" [style]="{width: '100%'}" [appendTo]="stakeholderDialog" 
+                    optionValue="value" [(ngModel)]="stakeholder.role" placeholder="Select role"></p-dropdown>
                 </td>
                 <td>
                     <span class="text-right ml-5">
@@ -133,7 +135,7 @@
         </div>
         <div class="flex justify-content-between">
             <button pButton type="button" class="p-button-secondary" label="Cancel" (click)="cancelStakeholderReview()"></button>
-            <button pButton type="button" label="Send Request"></button>
+            <button pButton type="button" label="Send Request" (click)="sendReviewRequest()"></button>
         </div>
     </ng-template>
 </p-dialog>

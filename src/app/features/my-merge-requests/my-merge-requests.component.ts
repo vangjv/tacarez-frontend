@@ -200,5 +200,8 @@ showContributorDialog(mergeRequest:MergeRequest) {
     this.showStakeholderReviewDialog = false;
     this.contributorForm.reset();
   }
+  sendReviewRequest(){
+    console.log("this.selectedMergeRequest:", this.selectedMergeRequest);
+  }
 
 }
