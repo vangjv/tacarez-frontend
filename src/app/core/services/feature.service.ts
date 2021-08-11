@@ -30,4 +30,5 @@ export class FeatureService {
   updateFeature(updateFeatureRequest:UpdateFeatureRequest, featureName:string, branch:string){
     return this.httpClient.put<Feature>(this.apiEndpoint + "/api/features/" + featureName + "/" + branch, updateFeatureRequest);
   }
+  
 }

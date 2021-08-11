@@ -59,6 +59,9 @@ export class LoadRevisionComponent implements OnInit, OnDestroy {
   }
 
   checkIfUserIsContributorOrOwner(currentUser:AccountInfo, revision:Revision):boolean{
+    if (currentUser == null || currentUser == undefined) {
+      return false;
+    }
     if (revision.owner == null || revision.owner == undefined) {
       return false;
     }

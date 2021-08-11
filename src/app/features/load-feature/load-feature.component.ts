@@ -67,6 +67,9 @@ export class LoadFeatureComponent implements OnInit, OnDestroy {
   }
 
   checkIfUserIsContributorOrOwner(currentUser:AccountInfo, feature:Feature):boolean{
+    if (currentUser == null || currentUser == undefined) {
+      return false;
+    }
     if (feature.owner == null || feature.owner == undefined) {
       return false;
     }

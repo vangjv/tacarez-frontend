@@ -61,6 +61,9 @@ export class LoadMergeRequestComponent implements OnInit, OnDestroy {
   }
 
   checkIfUserIsContributorOrOwner(currentUser:AccountInfo, mergeRequest:MergeRequest):boolean{
+    if (currentUser == null || currentUser == undefined) {
+      return false;
+    }
     if (mergeRequest.owner == null || mergeRequest.owner == undefined) {
       return false;
     }
