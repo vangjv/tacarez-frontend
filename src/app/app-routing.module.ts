@@ -9,6 +9,7 @@ import { LogOutComponent } from './features/log-out/log-out.component';
 import { LoadFeatureComponent } from './features/load-feature/load-feature.component';
 import { MyRevisionsComponent } from './features/my-revisions/my-revisions.component';
 import { LoadRevisionComponent } from './features/load-revision/load-revision.component';
+import { AllFeaturesComponent } from './features/all-features/all-features.component';
 import { MyMergeRequestsComponent } from './features/my-merge-requests/my-merge-requests.component';
 import { MsalGuard } from '@azure/msal-angular';
 import { LoadMergeRequestComponent } from './features/load-merge-request/load-merge-request.component';
@@ -24,6 +25,10 @@ const routes: Routes = [
       {path: 'revision/:featureName/:revisionName', component: LoadRevisionComponent},
       {path: 'mergerequest/:featureName/:mergeId', component: LoadMergeRequestComponent},
       {path: 'feature',  redirectTo: ''},
+      {path: 'myfeatures', component: MyFeaturesComponent},
+      {path: 'myrevisions', component: MyRevisionsComponent},
+      {path: 'mergerequest', component: MergeRequestComponent},
+      {path: 'explore', component: AllFeaturesComponent}
       {
         path: 'myfeatures', 
         component: MyFeaturesComponent,
