@@ -32,7 +32,7 @@
                             </span>
                             <span class="pr-2 pl-2">
                                 <button pButton pRipple type="button" icon="fas fa-user-plus" 
-                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Contributors" tooltipPosition="top"></button>
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Contributors" tooltipPosition="top" (click)="showContributorDialog(merge)"></button>
                             </span>
                             <span class="pr-2 pl-2">
                                 <button pButton pRipple type="button" icon="far fa-envelope" 
@@ -53,39 +53,6 @@
     </div>
 </div>
 
-<!-- Merge request modal -->
-<p-dialog header="Request a merge" [(visible)]="showMergeRequestDialog" [style]="{width: '50vw'}">
-    <div class="grid">
-        <div class="col-12 md-4">
-            <div class="mb-3">
-                Requesting a merge will create a copy of your revision and submit it to the feature owner for review.                    
-            </div>
-            <div class="mb-3">
-                By selected the merge option below and clicking Ok, you are requesting that the owner of the following feature review your revision: 
-            </div>
-            <div class="mb-3">
-                <strong class="ml-5">{{selectedRevision?.featureName}}</strong>
-            </div>
-            <div class="mb-3">
-                Once they review your review, it is up to them to approve and merge your changes into the feature or deny the merge request.
-            </div>
-            <div class="p-fluid">
-                <div class="p-field mb-3">
-                    <p-dropdown [options]="mergeOptions" [(ngModel)]="mergeSelection" optionLabel="name" optionValue="value" placeholder="Select an option"></p-dropdown>
-                </div>
-            </div>
-            <div class="p-fluid" *ngIf="mergeSelection == 'Request merge'">
-                <div class="p-field mb-3">
-                    <textarea pInputTextarea [(ngModel)]="mergeNotes" class="w-100"></textarea>
-                </div>
-            </div>
-        </div>
-    </div>
-    <p-footer>
-        <button pButton (click)="createMergeRequest()" [disabled]="mergeSelection != 'Request merge' || requestingMerge == true">Ok</button>
-    </p-footer>
-</p-dialog>
-
 <!-- Merge Notes Modal -->
 <p-dialog header="Notes from merge requestor" [(visible)]="showMergeNotesDialog" [style]="{width: '50vw'}">
     <div class="grid">
@@ -102,25 +69,26 @@
     </p-footer>
 </p-dialog>
 
-
 <!-------Request stakeholder review Modal( showStakeholder() )------->
 <p-dialog [(visible)]="showStakeholderReviewDialog"[closeOnEscape]="true" [transitionOptions]="'100ms'" [resizable]="false" [modal]="true"
-[style]="{width: '50vw'}" [baseZIndex]="10000" [maximizable]="true" header="Stakeholder Review Request" scrollHeight="flex">
-    <p-table [value]="selectedMergeRequest?.stakeholderReview?.stakeholders" [scrollable]="true" scrollHeight="flex">
+    [style]="{width: '60vw'}" [maximizable]="true" header="Stakeholder Review Request" scrollHeight="flex" #stakeholderDialog>
+    <p-table [value]="selectedMergeRequest?.stakeholderReview?.stakeholders">
         <ng-template pTemplate="header">
             <tr>
-                <th>Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
                 <th>Email</th>
                 <th>Role</th>                 
                 <th>Actions</th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-merge>
+        <ng-template pTemplate="body" let-stakeholder let-i="rowIndex">
             <tr>
-                <td>{{merge.firstName + " " + merge.lastName}}</td>
-                <td>{{merge.email}}</td>
+                <td>{{stakeholder.firstName}}</td>
+                <td>{{stakeholder.lastName}}</td>
+                <td>{{stakeholder.email}}</td>
                 <td>
-                    <p-dropdown [options]="envelopeRoles" optionLabel="label" [style]="{width: '100%'}"></p-dropdown>
+                    {{stakeholder.role}}
                 </td>
                 <td>
                     <span class="text-right ml-5">
@@ -128,46 +96,88 @@
                             class="p-button-rounded p-button-outlined p-button-raised p-button-danger">
                         </button>
                     </span>
-
                 </td>
             </tr>
         </ng-template>
-    </p-table>
-    <form [formGroup]="stakeholderForm">
-        <div class="row flex">
-            <div class="col pr-3">
-                <div class="p-inputgroup mt-1">
-                    <input type="text" id="firstName" pInputText formControlName="firstName" placeholder="First Name" [style]="{width:'100%'}">         
-                </div>
-            </div>
-            <div class="col pr-3">
-                <div class="p-inputgroup mt-1">
-                    <input type="text" id="lastName" pInputText formControlName="lastName" placeholder="Last Name" [style]="{width:'100%'}">         
-                </div>
-            </div>
-            <div class="col pl-3">
-                <div class="p-inputgroup mt-1">                 
-                    <input type="text" id="email" pInputText formControlName="email" placeholder="Email" [style]="{width:'100%'}">       
-                </div>
-            </div>
-
-            <div class="col-2 text-right pl-3 mt-1">
-                <button pButton type="button"(click)="addStakeholder()" [disabled]="stakeholderForm.invalid" label="Add" [style]="{width:'100%'}"></button> 
-            </div>
-        </div>
-        <div class="mt-3 pt-3">
-            <button pButton type="button" (click)="display=false" label="Close" [style]="{width:'40%'}"></button>
-        </div>
-    </form>
+    </p-table>    
     <ng-template pTemplate="footer">
-        <div class="col-12">
-            <label for="message" class="pb-2" style="font-weight: bold; text-align: left;">
-                Message to reviewers:
-            </label>
-            <textarea pInputTextarea rows="8" autoResize="autoResize" class="w-full"></textarea>
+        <form [formGroup]="stakeholderForm">
+            <div class="grid">
+                <div class="col pr-3">
+                    <div class="p-inputgroup mt-1">
+                        <input type="text" id="firstName" pInputText formControlName="firstName" placeholder="First Name" [style]="{width:'100%'}">         
+                    </div>
+                </div>
+                <div class="col pr-3">
+                    <div class="p-inputgroup mt-1">
+                        <input type="text" id="lastName" pInputText formControlName="lastName" placeholder="Last Name" [style]="{width:'100%'}">         
+                    </div>
+                </div>
+                <div class="col pl-3">
+                    <div class="p-inputgroup mt-1">                 
+                        <input type="text" id="email" pInputText formControlName="email" placeholder="Email" [style]="{width:'100%'}" (keyup.enter)="addStakeholder()">       
+                    </div>
+                </div>
+                <div class="col-2 text-right pl-3 mt-1">
+                    <p-dropdown [options]="envelopeRoles" optionLabel="label" [style]="{width: '100%'}" [appendTo]="stakeholderDialog" 
+                        optionValue="value" formControlName="role" placeholder="Select role" styleClass="text-left"></p-dropdown>
+                </div>
+            </div>
+            <div class="flex justify-content-end">
+                <button pButton type="button"(click)="addStakeholder()" [disabled]="stakeholderForm.invalid" label="Add stakeholder"></button> 
+            </div>            
+        </form>
+        <div class="field" class="text-left mt-3 mb-3">
+            <label for="messageToReviewers" class="mb-3" style="font-weight: 600;color: #495057;">Message to reviewers:</label>
+            <textarea pInputTextarea rows="8" style="resize:none" class="w-full"></textarea>
         </div>
-        <div class="col-12">
+        <div class="flex justify-content-between">
+            <button pButton type="button" class="p-button-secondary" label="Cancel" (click)="cancelStakeholderReview()"></button>
             <button pButton type="button" label="Send Request"></button>
         </div>
     </ng-template>
+</p-dialog>
+
+<!-------Contributor Modal------->
+<p-dialog [(visible)]="contributorDisplay"
+[closeOnEscape]="true" [transitionOptions]="'100ms'" [resizable]="false" 
+[style]="{width: '50vw'}" appendTo="body" [maximizable]="true" header="Contributors" scrollHeight="flex">
+        <p-table [value]="selectedMergeRequest?.contributors" [scrollable]="true" scrollHeight="flex" height="300px">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Email</th>
+                    <th style="text-align: center;">Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-co let-rowIndex="rowIndex">
+                <tr>
+                    <td>{{co.email}}</td>
+                    <td style="text-align: center;">
+                        <span class="text-right ml-5">
+                            <button (click)="deleteContributors(rowIndex)" pButton pRipple type="button" icon="pi pi-trash"
+                             class="p-button-rounded p-button-outlined p-button-raised p-button-danger">
+                            </button>
+                        </span>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <ng-template pTemplate="footer">
+            <form [formGroup]="contributorForm">
+                <div class="row flex">
+                    <div class="col pl-3">
+                        <div class="p-inputgroup mt-1">
+                            <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+                            <input type="text" id="email" pInputText formControlName="email" placeholder="Email" [style]="{width:'100%'}" (keyup.enter)="addContributor()">       
+                        </div>
+                    </div>        
+                    <div class="col-2 text-right pl-3 mt-1">
+                        <button pButton type="button"(click)="addContributor()" [disabled]="saving==true || contributorForm.invalid" label="Add" [style]="{width:'100%'}"></button> 
+                    </div>
+                </div>
+                <div class="mt-3 pt-3">
+                    <button pButton type="button" (click)="closeContributorDialog()" label="Close" [style]="{width:'40%'}"></button>
+                </div>
+            </form>
+        </ng-template>
 </p-dialog>

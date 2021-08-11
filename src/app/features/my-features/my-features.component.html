@@ -25,11 +25,6 @@
                                 <button pButton pRipple type="button" icon="fas fa-user-plus" 
                                 class="p-button-rounded p-button-outlined p-button-raised" (click)="showContributorDialog(ft)" pTooltip="Contributors" tooltipPosition="top"></button>
                             </span>
-                            <!-- <span class="pr-2 pl-2">
-                                <button pButton pRipple type="button" icon="fas fa-code-branch" 
-                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Merge Request" tooltipPosition="top" routerLink="/mergerequest"></button>
-                                    <i class="pi p-mr-4" pBadge style="font-size: 2rem" value="2"></i>
-                            </span> -->
                             <span class="pr-2 pl-2">
                                 <button pButton pRipple type="button" icon="fas fa-users" 
                                 class="p-button-rounded p-button-outlined p-button-raised" (click)="showStakeholderDialog(ft)" pTooltip="Stakeholders & Reviewers" tooltipPosition="top"></button>
@@ -45,8 +40,6 @@
     </div>
 </div>
 
-
-
 <!-------Stakeholder/Reviewer Modal------->
 <p-dialog [(visible)]="display"
 [closeOnEscape]="true" [transitionOptions]="'100ms'" [resizable]="false" 
@@ -54,14 +47,16 @@
         <p-table [value]="selectedFeature?.stakeholders" [scrollable]="true" scrollHeight="flex" height="300px">
             <ng-template pTemplate="header">
                 <tr>
-                    <th>Name</th>
+                    <th>First name</th>
+                    <th>Last name</th>
                     <th>Email</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-sh let-rowIndex="rowIndex">
                 <tr>
-                    <td>{{sh.firstName}} {{sh.lastName}}</td>
+                    <td>{{sh.firstName}}</td>
+                    <td>{{sh.lastName}}</td>
                     <td>{{sh.email}}</td>
                     <td class="text-center">
                         <span class="text-right ml-5">
@@ -73,7 +68,6 @@
                 </tr>
             </ng-template>
         </p-table>
-
         <ng-template pTemplate="footer">
             <form [formGroup]="stakeholderForm">
                 <div class="row flex">
@@ -106,8 +100,6 @@
             </form>
         </ng-template>
 </p-dialog>
-
-
 
 <!-------Contributor Modal------->
 <p-dialog [(visible)]="contributorDisplay"

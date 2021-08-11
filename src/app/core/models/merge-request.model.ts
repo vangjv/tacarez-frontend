@@ -10,16 +10,16 @@ export class MergeRequest {
     mergeRequester: User;
     mergeRequesterNotes?: string;
     contributors?: User[];
-    stakeholderReview: StakeholderReview;
+    public stakeholderReview: StakeholderReview;
     createdDate?: Date;
     lastModifiedDate?: Date;
 }
 
 export class StakeholderReview {
-    envelopeId?: string;
-    status?: string;
-    createdDate?: Date;
-    stakeholders?: User[];
+    public envelopeId?: string;
+    public status?: string;
+    public createdDate?: Date;
+    public stakeholders?: User[];
 }
 
 
