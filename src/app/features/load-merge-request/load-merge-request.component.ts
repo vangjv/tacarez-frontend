@@ -1,15 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { LoadingService } from 'src/app/core/loadingspinner/loading-spinner/loading.service';
 import { GeoJsonHelperService } from 'src/app/core/services/geo-json-helper.service';
 import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import { MessageService } from 'primeng/api';
 import { StateService } from 'src/app/core/services/state.service';
-import { AccountInfo } from '@azure/msal-browser';
+import { AccountInfo, InteractionStatus } from '@azure/msal-browser';
 import { OIDToken } from 'src/app/core/models/id-token.model';
 import { MergeService } from 'src/app/core/services/merge.service';
 import { MergeRequest } from 'src/app/core/models/merge-request.model';
+import { MsalBroadcastService } from '@azure/msal-angular';
+import { filter, takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-load-merge-request',
   templateUrl: './load-merge-request.component.html',
@@ -25,12 +27,18 @@ export class LoadMergeRequestComponent implements OnInit, OnDestroy {
   isOwnerOrContributor:boolean = false;
   currentUser:AccountInfo;
   mergeRequest:MergeRequest;
+  msalSubscription:Subscription;
+  private readonly _destroying$ = new Subject<void>();
   constructor(private route: ActivatedRoute,private geoJsonHelper:GeoJsonHelperService, private loadingService:LoadingService,
-    private mergeService:MergeService, private messageService:MessageService, private stateService:StateService) { }
+    private mergeService:MergeService, private messageService:MessageService, private stateService:StateService,
+    private msalBroadcastService:MsalBroadcastService,) { }
 
   ngOnDestroy(): void {
     if (this.routeSub) {
       this.routeSub.unsubscribe();
+    }
+    if (this.msalSubscription) {
+      this.msalSubscription.unsubscribe();
     }
   }
 
@@ -38,15 +46,29 @@ export class LoadMergeRequestComponent implements OnInit, OnDestroy {
     this.routeSub = this.route.paramMap.subscribe((params: ParamMap) => {
       this.featureName = params.get('featureName');
       this.mergeId = params.get('mergeId');
-      this.checkIfRevisionExist();
-    });
-    this.currentUser = this.stateService.getCurrentUser();
+      this.waitForAuthentication();
+    });    
   }
 
-  checkIfRevisionExist(){
+  waitForAuthentication(){
+    this.msalSubscription = this.msalBroadcastService.inProgress$
+    .pipe(
+        filter((status: InteractionStatus) => status === InteractionStatus.None),
+        takeUntil(this._destroying$)
+    )
+    .subscribe(() => {
+      this.checkIfMergeRequestExist();
+    }, err=>{
+      console.log("Error:", err);
+      this.loadingService.decrementLoading();
+    });
+  }
+
+  checkIfMergeRequestExist(){
     this.loadingService.incrementLoading();
     this.mergeService.getMergeRequestsByNameAndId(this.featureName, this.mergeId).toPromise().then(mergeRequest=>{
       this.mergeRequest = mergeRequest;
+      this.currentUser = this.stateService.getCurrentUser();
       console.log("mergeRequest:", mergeRequest);
       console.log("mergeRequest.owner.GUID:", mergeRequest.owner.guid);
       console.log("oid:", (this.currentUser?.idTokenClaims as OIDToken)?.oid);
