@@ -31,6 +31,7 @@ import { BreadcrumbService } from './app.breadcrumb.service';
 import { HomeComponent } from './features/home/home.component';
 import { NewFeatureComponent } from './features/new-feature/new-feature.component';
 import { MyFeaturesComponent } from './features/my-features/my-features.component';
+import { AllFeaturesComponent } from './features/all-features/all-features.component';
 import {TableModule} from 'primeng/table';
 import {BadgeModule} from 'primeng/badge';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
@@ -124,7 +125,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     LoadRevisionMap,
     LoadFeatureComponent,
     LoadRevisionComponent,
-    MyRevisionsComponent
+    MyRevisionsComponent,
+    AllFeaturesComponent
   ],
   imports: [
     BrowserModule,
