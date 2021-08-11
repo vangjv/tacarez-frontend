@@ -1,22 +1,24 @@
 <div class="mt-5">
     <div class="col-12 md:col-6 lg:col-9 mx-auto">
         <div>
-            <h1>My features</h1>
+            <h1>Explore features</h1>
             <p-table [value]="features">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Name</th>
                         <th>Description</th>
+                        <th>Tags</th>
                         <th style="width: 15%;">Last Modified</th>
-                        <th>Actions</th>
+                        <th style="width: 5%;" class="text-center">View</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-ft>
                     <tr>
                         <td>{{ft.id}}</td>
                         <td>{{ft.description}}</td>
+                        <td>{{ft.tags?.join(", ")}}</td>
                         <td>{{ft.lastModifiedDate | date :'short' }}</td>
-                        <td style="text-align: center;">
+                        <td class="text-center">
                             <span class="pr-2 pl-2">
                                 <button pButton pRipple type="button" icon="fas fa-search" 
                                 class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Open/View" tooltipPosition="top" (click)="openFeature(ft.id)"></button>
