@@ -131,7 +131,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     LoadFeatureComponent,
     LoadRevisionComponent,
     MyRevisionsComponent,
-    AllFeaturesComponent
+    AllFeaturesComponent,
     MyMergeRequestsComponent,
     LoadMergeRequestComponent,
     LoadMergeRequestMap

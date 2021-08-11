@@ -28,7 +28,7 @@ const routes: Routes = [
       {path: 'myfeatures', component: MyFeaturesComponent},
       {path: 'myrevisions', component: MyRevisionsComponent},
       {path: 'mergerequest', component: MergeRequestComponent},
-      {path: 'explore', component: AllFeaturesComponent}
+      {path: 'explore', component: AllFeaturesComponent},
       {
         path: 'myfeatures', 
         component: MyFeaturesComponent,
