@@ -10,6 +10,9 @@ import { LoadFeatureComponent } from './features/load-feature/load-feature.compo
 import { MyRevisionsComponent } from './features/my-revisions/my-revisions.component';
 import { LoadRevisionComponent } from './features/load-revision/load-revision.component';
 import { AllFeaturesComponent } from './features/all-features/all-features.component';
+import { MyMergeRequestsComponent } from './features/my-merge-requests/my-merge-requests.component';
+import { MsalGuard } from '@azure/msal-angular';
+import { LoadMergeRequestComponent } from './features/load-merge-request/load-merge-request.component';
 
 const routes: Routes = [
   {
@@ -20,11 +23,32 @@ const routes: Routes = [
       {path: 'feature/:featureName', component: LoadFeatureComponent},
       {path: 'feature/:featureName/:hash', component: LoadFeatureComponent},
       {path: 'revision/:featureName/:revisionName', component: LoadRevisionComponent},
+      {path: 'mergerequest/:featureName/:mergeId', component: LoadMergeRequestComponent},
       {path: 'feature',  redirectTo: ''},
       {path: 'myfeatures', component: MyFeaturesComponent},
       {path: 'myrevisions', component: MyRevisionsComponent},
       {path: 'mergerequest', component: MergeRequestComponent},
       {path: 'explore', component: AllFeaturesComponent}
+      {
+        path: 'myfeatures', 
+        component: MyFeaturesComponent,
+        canActivate: [MsalGuard]
+      },
+      {
+        path: 'myrevisions', 
+        component: MyRevisionsComponent,
+        canActivate: [MsalGuard]
+      },
+      {
+        path: 'mymergerequests', 
+        component: MyMergeRequestsComponent,
+        canActivate: [MsalGuard]
+      },
+      {
+        path: 'mergerequest', 
+        component: MergeRequestComponent,
+        canActivate: [MsalGuard]
+      }
     ]
   },
   {

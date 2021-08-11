@@ -29,11 +29,11 @@
                     Creating a revision will make a copy of this feature that you can modify. You can then request your changes to be merged into the feature.
                 </div>
                 <div class="p-fluid">
-                    <div class="p-field">
+                    <div class="p-field mb-3">
                         <label class="mr-2">Revision name</label>
-                        <input type="Text" pInputText [style]="{'width': '100%'}" formControlName="revisionName">
+                        <input type="Text" pInputText [style]="{'width': '100%'}" formControlName="revisionName" placeholder="Names can be any combination of letters and numbers. Spaces will be replaced with hyphens.">
                     </div>
-                    <div class="p-field">
+                    <div class="p-field mb-3">
                         <label class="mr-2">Description</label>
                         <input type="Text" pInputText [style]="{'width': '100%'}" formControlName="description">
                     </div>
@@ -93,4 +93,7 @@
 </div>
 <div id="getData" class="esri-widget esri-widget--button esri-widget esri-interactive" title="Get data">
     <span class="esri-icon-share2"></span>
+</div>   
+<div id="consoleLog" class="esri-widget esri-widget--button esri-widget esri-interactive" title="Console log">
+    <span class="esri-icon-dock-bottom"></span>
 </div>   

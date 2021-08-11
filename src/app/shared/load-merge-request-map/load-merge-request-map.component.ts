@@ -19,19 +19,19 @@ import { MsalService } from '@azure/msal-angular';
 import { GitHubUser, UpdateFeatureRequest } from 'src/app/core/models/update-feature-request.model';
 import { NewRevisionRequest } from 'src/app/core/models/new-revision-request.model';
 import { RevisionsService } from 'src/app/core/services/revisions.service';
-import Compass from '@arcgis/core/widgets/Compass';
+import { MergeRequest } from 'src/app/core/models/merge-request.model';
 
 @Component({
-  selector: 'app-load-revision-map',
-  templateUrl: './load-revision-map.component.html',
-  styleUrls: ['./load-revision-map.component.css']
+  selector: 'app-load-merge-request-map',
+  templateUrl: './load-merge-request-map.component.html',
+  styleUrls: ['./load-merge-request-map.component.css']
 })
 
-export class LoadRevisionMap implements OnInit {
+export class LoadMergeRequestMap implements OnInit {
   // this is needed to be able to create the MapView at the DOM element in this component
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   @Input() featureName:string;
-  @Input() revisionName:string;
+  @Input() mergeRequest:MergeRequest;
   @Input() geojsonLayer:GeoJSONLayer;
   @Input() isOwnerOrContributor:boolean = false;
   map: WebMap;
@@ -44,7 +44,7 @@ export class LoadRevisionMap implements OnInit {
   revisionForm:FormGroup;
   saving:boolean = false;
   geoJsonURL:string = "";
-  revisionURL:string = "";
+  mergeRequestURL:string = "";
   constructor(private geoJsonHelper:GeoJsonHelperService, private stateService:StateService, private featureService:FeatureService,
     private loadingService:LoadingService, private confirmationService: ConfirmationService, private messageService: MessageService,
     private authService: MsalService, private revisionService:RevisionsService) { }
@@ -61,8 +61,8 @@ export class LoadRevisionMap implements OnInit {
       this.revisionForm = this.createRevisionForm();
       this.initializeMap();
       //set geojsonurl
-      this.geoJsonURL = "https://api.tacarez.com/api/geojson/" + this.featureName + "/" + this.revisionName;
-      this.revisionURL = "https://www.tacarez.com/revision/" + this.featureName + "/" + this.revisionName;;
+      this.geoJsonURL = "https://api.tacarez.com/api/geojsonmerge/" + this.featureName + "/" + this.mergeRequest.id;
+      this.mergeRequestURL = "https://www.tacarez.com/mergerequest/" + this.featureName + "/" + this.mergeRequest.id;
       console.log("isOwnerOrContributor:", this.isOwnerOrContributor);
     }   
   }
@@ -125,14 +125,7 @@ export class LoadRevisionMap implements OnInit {
     };
 
     this.mapView = new MapView(mapViewProperties);
-
-    let compass = new Compass({
-      view: this.mapView
-    });
-    this.mapView.ui.add(compass, "top-left");
-
     this.addSideButtons(this.mapView);
-    
     let fieldConfigName:FieldConfig = new FieldConfig( {
       name: "name",
       label: "Name",
@@ -253,38 +246,38 @@ export class LoadRevisionMap implements OnInit {
   }
 
   saveChanges(){
-    let currentUser = this.stateService.getCurrentUser();   
-    this.saving = true;
-    this.loadingService.incrementLoading("Saving...");
-    this.geoJsonHelper.getGeoJsonFromLayer(this.geojsonLayer).then(FeatureCollection=> {
-      let encodedGeoJson = btoa(JSON.stringify(FeatureCollection));
-      let updateFeatureRequest:UpdateFeatureRequest = new UpdateFeatureRequest();
-      let committer:GitHubUser = new GitHubUser();
-      let oidClaims:OIDToken = currentUser.idTokenClaims as OIDToken;  
-      committer.email = oidClaims.emails[0];
-      committer.name = oidClaims.name;
-      committer.date = new Date().toDateString();
-      updateFeatureRequest.committer = committer;
-      updateFeatureRequest.content = encodedGeoJson;
-      updateFeatureRequest.message = this.saveMapForm.value.notes;
-      this.featureService.updateFeature(updateFeatureRequest, this.featureName, this.revisionName).toPromise().then(res=>{
-        this.loadingService.decrementLoading();
-        this.messageService.add({severity:'success', summary:'Success', detail:'Your feature was successfully updated.'});
-        this.saveMapDialog = false;
-        this.saving = false;
-        this.saveMapForm.reset();
-      }, err=>{
-        this.loadingService.decrementLoading();
-        console.log("Error from new feature request:", err);
-        if (err.error == "A feature with that name already exist") {
-          this.messageService.add({severity:'error', summary: 'Error', detail: 'A feature with that name already exist.  Please try another name.'});
-        } else {
-          this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while saving your feature. Please try again.'});
-        }
-        this.saving = false;
-      });
-    })
-    .catch(error => console.warn(error));
+    // let currentUser = this.stateService.getCurrentUser();   
+    // this.saving = true;
+    // this.loadingService.incrementLoading("Saving...");
+    // this.geoJsonHelper.getGeoJsonFromLayer(this.geojsonLayer).then(FeatureCollection=> {
+    //   let encodedGeoJson = btoa(JSON.stringify(FeatureCollection));
+    //   let updateFeatureRequest:UpdateFeatureRequest = new UpdateFeatureRequest();
+    //   let committer:GitHubUser = new GitHubUser();
+    //   let oidClaims:OIDToken = currentUser.idTokenClaims as OIDToken;  
+    //   committer.email = oidClaims.emails[0];
+    //   committer.name = oidClaims.name;
+    //   committer.date = new Date().toDateString();
+    //   updateFeatureRequest.committer = committer;
+    //   updateFeatureRequest.content = encodedGeoJson;
+    //   updateFeatureRequest.message = this.saveMapForm.value.notes;
+    //   this.featureService.updateFeature(updateFeatureRequest, this.featureName, this.revisionName).toPromise().then(res=>{
+    //     this.loadingService.decrementLoading();
+    //     this.messageService.add({severity:'success', summary:'Success', detail:'Your feature was successfully updated.'});
+    //     this.saveMapDialog = false;
+    //     this.saving = false;
+    //     this.saveMapForm.reset();
+    //   }, err=>{
+    //     this.loadingService.decrementLoading();
+    //     console.log("Error from new feature request:", err);
+    //     if (err.error == "A feature with that name already exist") {
+    //       this.messageService.add({severity:'error', summary: 'Error', detail: 'A feature with that name already exist.  Please try another name.'});
+    //     } else {
+    //       this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while saving your feature. Please try again.'});
+    //     }
+    //     this.saving = false;
+    //   });
+    // })
+    // .catch(error => console.warn(error));
   }
 
   copyGeoJsonURLToClipBoard(){
@@ -292,7 +285,7 @@ export class LoadRevisionMap implements OnInit {
   }
 
   copyFeatureURLToClipBoard(){
-    this.copyTextToClipboard(this.revisionURL);
+    this.copyTextToClipboard(this.mergeRequestURL);
   }
 
   fallbackCopyTextToClipboard(text) {

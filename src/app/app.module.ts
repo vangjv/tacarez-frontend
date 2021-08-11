@@ -22,6 +22,7 @@ import {DialogModule} from 'primeng/dialog';
 import {InputTextModule} from 'primeng/inputtext';
 import {MenuModule} from 'primeng/menu';
 import {ToastModule} from 'primeng/toast';
+import {ChipsModule} from 'primeng/chips';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -54,6 +55,10 @@ import { LoadFeatureComponent } from './features/load-feature/load-feature.compo
 import { MyRevisionsComponent } from './features/my-revisions/my-revisions.component';
 import { LoadRevisionMap } from './shared/load-revision-map/load-revision-map.component';
 import { LoadRevisionComponent } from './features/load-revision/load-revision.component';
+import { MergeService } from './core/services/merge.service';
+import { MyMergeRequestsComponent } from './features/my-merge-requests/my-merge-requests.component';
+import { LoadMergeRequestComponent } from './features/load-merge-request/load-merge-request.component';
+import { LoadMergeRequestMap } from './shared/load-merge-request-map/load-merge-request-map.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -127,6 +132,9 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     LoadRevisionComponent,
     MyRevisionsComponent,
     AllFeaturesComponent
+    MyMergeRequestsComponent,
+    LoadMergeRequestComponent,
+    LoadMergeRequestMap
   ],
   imports: [
     BrowserModule,
@@ -153,7 +161,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     DialogModule,
     InputTextModule,
     MenuModule,
-    ToastModule
+    ToastModule,
+    ChipsModule
   ],
   providers: [
     // {
@@ -180,7 +189,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     BreadcrumbService,
     ConfirmationService,
     MessageService,
-    LoadingService
+    LoadingService,
+    MergeService
   ],
   bootstrap: [AppComponent, MsalRedirectComponent]
 })

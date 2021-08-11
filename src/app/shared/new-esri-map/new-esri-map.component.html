@@ -8,17 +8,17 @@
         <div class="grid" >
             <div class="col-12 md:4">
                 <div class="p-fluid">
-                    <div class="p-field">
+                    <div class="p-field mb-3">
                         <label class="mr-2">Feature name</label>
-                        <input type="Text" pInputText [style]="{'width': '100%'}" formControlName="name">
+                        <input type="Text" pInputText [style]="{'width': '100%'}" formControlName="name" placeholder="Names can be any combination of letters and numbers. Spaces will be replaced with hyphens.">
                     </div>
-                    <div class="p-field">
+                    <div class="p-field mb-3">
                         <label class="mr-2">Description</label>
                         <input type="Text" pInputText [style]="{'width': '100%'}" formControlName="description">
                     </div>
-                    <div class="p-field">
+                    <div class="p-field mb-3">
                         <label class="mr-2">Tags</label>
-                        <input type="Text" pInputText [style]="{'width': '100%'}" formControlName="tags">
+                        <p-chips type="Text" formControlName="tags" separator="," placeholder="Enter comma separated words as tags"></p-chips>
                     </div>
                 </div>
             </div>

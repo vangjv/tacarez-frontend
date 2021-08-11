@@ -1,0 +1,185 @@
+<div class="mt-5">
+    <div class="col-12 md:col-6 lg:col-9 mx-auto">
+        <div>
+            <h1>My Merge Requests</h1>
+            <p-table [value]="mergeRequests">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Feature Name</th>
+                        <th>Revison Name</th>
+                        <th class="text-center">Notes from requestor</th>
+                        <th>Status</th>
+                        <th style="width: 15%;">Created date</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-merge>
+                    <tr>
+                        <td>{{merge.featureName}}</td>
+                        <td>{{merge.revisionName}}</td>
+                        <td class="text-center">
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="far fa-comment" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="View notes" tooltipPosition="top" (click)="openNotes(merge)"></button>
+                            </span>
+                        </td>
+                        <td>{{merge.status ?? "Review not started"}}</td>
+                        <td>{{merge.createdDate | date :'short' }}</td>
+                        <td class="text-center">
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-search" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Open/View" tooltipPosition="top" (click)="reviewMergeMap(merge.featureName, merge.id)"></button>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="fas fa-user-plus" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Contributors" tooltipPosition="top" (click)="showContributorDialog(merge)"></button>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="far fa-envelope" 
+                                class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Request review" tooltipPosition="top" (click)="openStakeHolderReviewDialog(merge)"></button>
+                            </span>
+                            <span class="pr-2 pl-2">
+                                <button pButton pRipple type="button" icon="far fa-thumbs-up" 
+                                    class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Approve merge" tooltipPosition="top"></button>
+                            </span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <div class="mt-2" *ngIf="mergeRequests?.length == 0">
+                You have no merge requests.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Merge Notes Modal -->
+<p-dialog header="Notes from merge requestor" [(visible)]="showMergeNotesDialog" [style]="{width: '50vw'}">
+    <div class="grid">
+        <div class="col-12">
+            <div class="p-fluid">
+                <div class="p-field mb-3">
+                    <textarea pInputTextarea [(ngModel)]="selectedMergeRequestNotes" class="w-full" style="resize: none;" [rows]="5"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p-footer>
+        <button pButton (click)="showMergeNotesDialog = false">Close</button>
+    </p-footer>
+</p-dialog>
+
+<!-------Request stakeholder review Modal( showStakeholder() )------->
+<p-dialog [(visible)]="showStakeholderReviewDialog"[closeOnEscape]="true" [transitionOptions]="'100ms'" [resizable]="false" [modal]="true"
+    [style]="{width: '60vw'}" [maximizable]="true" header="Stakeholder Review Request" scrollHeight="flex" #stakeholderDialog>
+    <p-table [value]="selectedMergeRequest?.stakeholderReview?.stakeholders">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Role</th>                 
+                <th width="10%"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-stakeholder let-i="rowIndex">
+            <tr>
+                <td>{{stakeholder.firstName}}</td>
+                <td>{{stakeholder.lastName}}</td>
+                <td>{{stakeholder.email}}</td>
+                <td>
+                    <!-- {{stakeholder.role}} -->
+                    <p-dropdown [options]="envelopeRoles" optionLabel="label" [style]="{width: '100%'}" [appendTo]="stakeholderDialog" 
+                    optionValue="value" [(ngModel)]="stakeholder.role" placeholder="Select role"></p-dropdown>
+                </td>
+                <td>
+                    <span class="text-right ml-5">
+                        <button pButton pRipple type="button" icon="pi pi-trash"
+                            class="p-button-rounded p-button-outlined p-button-raised p-button-danger">
+                        </button>
+                    </span>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>    
+    <ng-template pTemplate="footer">
+        <form [formGroup]="stakeholderForm">
+            <div class="grid">
+                <div class="col pr-3">
+                    <div class="p-inputgroup mt-1">
+                        <input type="text" id="firstName" pInputText formControlName="firstName" placeholder="First Name" [style]="{width:'100%'}">         
+                    </div>
+                </div>
+                <div class="col pr-3">
+                    <div class="p-inputgroup mt-1">
+                        <input type="text" id="lastName" pInputText formControlName="lastName" placeholder="Last Name" [style]="{width:'100%'}">         
+                    </div>
+                </div>
+                <div class="col pl-3">
+                    <div class="p-inputgroup mt-1">                 
+                        <input type="text" id="email" pInputText formControlName="email" placeholder="Email" [style]="{width:'100%'}" (keyup.enter)="addStakeholder()">       
+                    </div>
+                </div>
+                <div class="col-2 text-right pl-3 mt-1">
+                    <p-dropdown [options]="envelopeRoles" optionLabel="label" [style]="{width: '100%'}" [appendTo]="stakeholderDialog" 
+                        optionValue="value" formControlName="role" placeholder="Select role" styleClass="text-left"></p-dropdown>
+                </div>
+            </div>
+            <div class="flex justify-content-end">
+                <button pButton type="button"(click)="addStakeholder()" [disabled]="stakeholderForm.invalid" label="Add stakeholder"></button> 
+            </div>            
+        </form>
+        <div class="field" class="text-left mt-3 mb-3">
+            <label for="messageToReviewers" class="mb-3" style="font-weight: 600;color: #495057;">Message to reviewers:</label>
+            <textarea pInputTextarea rows="8" style="resize:none" class="w-full"></textarea>
+        </div>
+        <div class="flex justify-content-between">
+            <button pButton type="button" class="p-button-secondary" label="Cancel" (click)="cancelStakeholderReview()"></button>
+            <button pButton type="button" label="Send Request" (click)="sendReviewRequest()"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-------Contributor Modal------->
+<p-dialog [(visible)]="contributorDisplay"
+[closeOnEscape]="true" [transitionOptions]="'100ms'" [resizable]="false" 
+[style]="{width: '50vw'}" appendTo="body" [maximizable]="true" header="Contributors" scrollHeight="flex">
+        <p-table [value]="selectedMergeRequest?.contributors" [scrollable]="true" scrollHeight="flex" height="300px">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Email</th>
+                    <th style="text-align: center;">Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-co let-rowIndex="rowIndex">
+                <tr>
+                    <td>{{co.email}}</td>
+                    <td style="text-align: center;">
+                        <span class="text-right ml-5">
+                            <button (click)="deleteContributors(rowIndex)" pButton pRipple type="button" icon="pi pi-trash"
+                             class="p-button-rounded p-button-outlined p-button-raised p-button-danger">
+                            </button>
+                        </span>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <ng-template pTemplate="footer">
+            <form [formGroup]="contributorForm">
+                <div class="row flex">
+                    <div class="col pl-3">
+                        <div class="p-inputgroup mt-1">
+                            <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+                            <input type="text" id="email" pInputText formControlName="email" placeholder="Email" [style]="{width:'100%'}" (keyup.enter)="addContributor()">       
+                        </div>
+                    </div>        
+                    <div class="col-2 text-right pl-3 mt-1">
+                        <button pButton type="button"(click)="addContributor()" [disabled]="saving==true || contributorForm.invalid" label="Add" [style]="{width:'100%'}"></button> 
+                    </div>
+                </div>
+                <div class="mt-3 pt-3">
+                    <button pButton type="button" (click)="closeContributorDialog()" label="Close" [style]="{width:'40%'}"></button>
+                </div>
+            </form>
+        </ng-template>
+</p-dialog>

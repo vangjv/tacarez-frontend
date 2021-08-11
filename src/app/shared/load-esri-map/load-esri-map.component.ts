@@ -21,6 +21,7 @@ import { GitHubUser, UpdateFeatureRequest } from 'src/app/core/models/update-fea
 import { NewRevisionRequest } from 'src/app/core/models/new-revision-request.model';
 import { RevisionsService } from 'src/app/core/services/revisions.service';
 import { Router } from '@angular/router';
+import Compass from '@arcgis/core/widgets/Compass';
 
 @Component({
   selector: 'app-load-esri-map',
@@ -76,7 +77,7 @@ export class LoadEsriMapComponent implements OnInit {
 
   createRevisionForm():FormGroup{
     return new FormGroup({
-      revisionName: new FormControl(null, [Validators.required]),
+      revisionName: new FormControl(null, [Validators.required, Validators.pattern('[a-zA-Z0-9 ]*')]),
       description: new FormControl(null, [Validators.required])
     });
   }
@@ -103,7 +104,7 @@ export class LoadEsriMapComponent implements OnInit {
       this.showRevisionDialog = false;
       this.saving = false;
       this.revisionForm.reset();
-      this.router.navigateByUrl("revision/features" + revision.featureName + "/" + revision.revisionName);
+      this.router.navigateByUrl("revision/" + revision.featureName + "/" + revision.revisionName);
     }, err=>{
       this.saving = false;
       this.loadingService.decrementLoading();
@@ -127,12 +128,20 @@ export class LoadEsriMapComponent implements OnInit {
     };
 
     this.mapView = new MapView(mapViewProperties);
+
+    let compass = new Compass({
+      view: this.mapView
+    });
+    this.mapView.ui.add(compass, "top-left");
+
     this.addSideButtons(this.mapView);
+    
     let fieldConfigName:FieldConfig = new FieldConfig( {
       name: "name",
       label: "Name",
       editable: true,
       editorType: "text-box",
+      required: true
     });
     let fieldConfigDescription:FieldConfig = new FieldConfig( {
       name: "description",
@@ -234,6 +243,15 @@ export class LoadEsriMapComponent implements OnInit {
         this.showSaveMap();      
       });
     }
+
+    // let consoleLogBtn = document.getElementById("consoleLog");
+    // mapView.ui.add(consoleLogBtn, "top-left");
+    // consoleLogBtn.addEventListener("click", () => {
+    //   this.geoJsonHelper.getGeoJsonFromLayer(this.geojsonLayer).then(features=>{
+    //     console.log(features);
+    //   });
+    // });
+    
   }
 
   showSaveMap(){
@@ -260,32 +278,11 @@ export class LoadEsriMapComponent implements OnInit {
     
   }
 
-  removeObjectId(attributes:any) {
-    if (attributes["OBJECTID"]) {
-      delete attributes.OBJECTID;
-    }
-    return attributes;
-  }
-
   saveMapFeature(){
     let currentUser = this.stateService.getCurrentUser();   
     this.saving = true;
-    this.loadingService.incrementLoading("Saving...");
-    this.geojsonLayer.queryFeatures().then(({ features }) => {
-      const FeatureCollection = {
-        type: "FeatureCollection",
-        features: []
-      };
-      FeatureCollection.features = features.map(
-        ({ attributes, geometry }, index) => {
-          return {
-            // id: index,
-            properties: this.removeObjectId(attributes),
-            geometry: arcgisToGeoJSON(geometry),
-            type:"Feature"
-          };
-        }
-      );
+    this.loadingService.incrementLoading("Saving...");    
+    this.geoJsonHelper.getGeoJsonFromLayer(this.geojsonLayer).then(FeatureCollection=>{
       let encodedGeoJson = btoa(JSON.stringify(FeatureCollection));
       let updateFeatureRequest:UpdateFeatureRequest = new UpdateFeatureRequest();
       let committer:GitHubUser = new GitHubUser();
@@ -313,8 +310,7 @@ export class LoadEsriMapComponent implements OnInit {
         }
         this.saving = false;
       });
-    })
-    .catch(error => console.warn(error));
+    });    
   }
 
   copyGeoJsonURLToClipBoard(){

@@ -19,6 +19,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { MsalService } from '@azure/msal-angular';
 import { Router } from '@angular/router';
 import { __rest } from 'tslib';
+import Compass from '@arcgis/core/widgets/Compass';
 
 @Component({
   selector: 'app-new-esri-map',
@@ -49,7 +50,7 @@ export class NewEsriMapComponent implements OnInit {
 
   createSaveMapForm():FormGroup{
     return new FormGroup({
-      name: new FormControl(null, [Validators.required, Validators.pattern('[a-zA-Z0-9 ]*')]),
+      name: new FormControl(null, [Validators.required, Validators.pattern('[a-zA-Z0-9 -]*')]),
       description: new FormControl(null, [Validators.required]),
       tags: new FormControl(null),
     });
@@ -64,8 +65,8 @@ export class NewEsriMapComponent implements OnInit {
     const m: WebMap = new WebMap(mapProperties);
     const mapViewProperties = {
       container: this.mapViewEl.nativeElement,
-      center: [0.1278, 51.5074],
-      zoom: 10,
+      center: [0.1278, 21.5074],
+      zoom: 2,
       map: m
     };
 
@@ -133,6 +134,11 @@ export class NewEsriMapComponent implements OnInit {
       console.warn(error);
     });
     
+    let compass = new Compass({
+      view: mapView
+    });
+    mapView.ui.add(compass, "top-left");
+    
     const saveFeatureBtn = document.getElementById("saveFeature");
     mapView.ui.add(saveFeatureBtn, "top-left");
 
@@ -169,32 +175,11 @@ export class NewEsriMapComponent implements OnInit {
     
   }
 
-  removeObjectId(attributes:any) {
-    if (attributes["OBJECTID"]) {
-      delete attributes.OBJECTID;
-    }
-    return attributes;
-  }
-
   saveMapFeature(){
     let currentUser = this.stateService.getCurrentUser();   
     this.saving = true;
     this.loadingService.incrementLoading("Saving...");
-    this.geojsonLayer.queryFeatures().then(({ features }) => {
-      const FeatureCollection = {
-        type: "FeatureCollection",
-        features: []
-      };
-      FeatureCollection.features = features.map(
-        ({ attributes, geometry }, index) => {
-          return {
-            // id: index,
-            properties: this.removeObjectId(attributes),
-            geometry: arcgisToGeoJSON(geometry),
-            type:"Feature"
-          };
-        }
-      );
+    this.geoJsonHelper.getGeoJsonFromLayer(this.geojsonLayer).then(FeatureCollection=> {
       let encodedGeoJson = btoa(JSON.stringify(FeatureCollection));
       let newFeature:NewFeature = new NewFeature();
       let mapOwner = new User();      
@@ -206,6 +191,7 @@ export class NewEsriMapComponent implements OnInit {
       newFeature.Id = this.saveMapForm.value.name;
       newFeature.Description = this.saveMapForm.value.description;
       newFeature.Owner = mapOwner
+      newFeature.Tags = this.saveMapForm.value.tags;
       let newFeatureRequest:NewFeatureRequest = new NewFeatureRequest();
       newFeatureRequest.feature = newFeature;
       newFeatureRequest.message = "Initial map";

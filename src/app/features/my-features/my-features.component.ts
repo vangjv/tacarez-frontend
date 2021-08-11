@@ -28,16 +28,9 @@ export class MyFeaturesComponent implements OnInit {
   selectedFeature: Feature;
   saving: boolean = false;
 
-  constructor(
-    private confirmationService: ConfirmationService, 
-    private messageService: MessageService,
-    private stateService:StateService, 
-    private featureService:FeatureService, 
-    private loadingService:LoadingService,
-    private router:Router,
-    private stakeholdersService:StakeholdersService,
-    private contributorsService:ContributorsService
-    ) {}
+  constructor(private confirmationService: ConfirmationService, private messageService: MessageService, private stateService:StateService, 
+    private featureService:FeatureService, private loadingService:LoadingService, private router:Router, private stakeholdersService:StakeholdersService,
+    private contributorsService:ContributorsService ) {}
 
   
   ngOnInit(): void {
@@ -48,14 +41,20 @@ export class MyFeaturesComponent implements OnInit {
         console.log("features:", features);
         this.features = features;
         this.loadingService.decrementLoading();
+      }, err=>{
+        console.log('err:', err);
+        this.loadingService.decrementLoading();
+        if(err.error == "No features found for that user") {
+          this.features = [];
+        } else {
+          this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while retrieving your features.  Please try another name.'});
+        }
       });
     }
 
     this.createFormGroup();
     this.createContributorFormGroup();
   }
-
-
 
 //FormGroup Stakeholder
   createFormGroup(){
@@ -77,13 +76,15 @@ export class MyFeaturesComponent implements OnInit {
 //PUT for stakeholder
   addStakeholder(){
     this.saving = true;
-    let stakeholderList = this.selectedFeature.stakeholders || [];
+    if (this.selectedFeature.stakeholders == null || this.selectedFeature.stakeholders == undefined) {
+      this.selectedFeature.stakeholders = [];
+    } 
     let addStakeholder = new User();
     addStakeholder.firstName = this.stakeholderForm.value.firstName;
     addStakeholder.lastName = this.stakeholderForm.value.lastName;
     addStakeholder.email = this.stakeholderForm.value.email;
-    stakeholderList.push(addStakeholder);
-    this.stakeholdersService.updateStakeholder(stakeholderList, this.selectedFeature.id).toPromise().then(sh=>{
+    this.selectedFeature.stakeholders.push(addStakeholder);
+    this.stakeholdersService.updateFeatureStakeholders(this.selectedFeature.stakeholders, this.selectedFeature.id).toPromise().then(sh=>{
       console.log("added a stakeholder:", sh);
       this.stakeholderForm.reset();
       // this.refreshStakeholdersAndSelectedFeatures();
@@ -110,16 +111,12 @@ export class MyFeaturesComponent implements OnInit {
 // DELETE stakeholders
   deleteStakeholder(index){
     this.selectedFeature.stakeholders.splice(index,1);
-    this.stakeholdersService.updateStakeholder(this.selectedFeature.stakeholders, this.selectedFeature.id).toPromise().then(sh=>{
+    this.stakeholdersService.updateFeatureStakeholders(this.selectedFeature.stakeholders, this.selectedFeature.id).toPromise().then(sh=>{
       console.log("delete a stakeholder:", sh);
       this.stakeholderForm.reset();
     });
     console.log(this.selectedFeature.stakeholders[index])
   }
-
-
-
-  ///////////////////////////////////
 
 // open up Contributor modal
 showContributorDialog(feature:Feature) {
@@ -138,50 +135,34 @@ showContributorDialog(feature:Feature) {
 //PUT for Contributor
   addContributor(){
     this.saving = true;
-    let contributorList = this.selectedFeature.contributors || [];
+    if (this.selectedFeature.contributors == null || this.selectedFeature.contributors == undefined) {
+      this.selectedFeature.contributors = [];
+    } 
     let addContributor = new User();
     addContributor.email = this.contributorForm.value.email;
 
-    contributorList.push(addContributor);
-    this.contributorsService.updateContributor(contributorList, this.selectedFeature.id).toPromise().then(con=>{
+    this.selectedFeature.contributors.push(addContributor);
+    this.contributorsService.updateFeatureContributors(this.selectedFeature.contributors, this.selectedFeature.id).toPromise().then(con=>{
       console.log("added a contributor:", con);
       this.contributorForm.reset();
-      // this.refreshStakeholdersAndSelectedFeatures();
       this.saving = false;
     });
-  }
-
-// Refresh stakeholder after being added
-  refreshContributorAndSelectedFeatures(){
-    this.loadingService.incrementLoading("Retrieving features");
-    this.featureService.getFeaturesByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(features=>{
-      console.log("features:", features);
-      this.features = features;
-      this.loadingService.decrementLoading();
-    });
-    this.features.forEach(feature=>{
-      if (feature.id == this.selectedFeature.id) {
-        this.selectedFeature = feature;
-      }
-    })
-
   }
 
 // DELETE stakeholders
   deleteContributors(index){
     this.selectedFeature.contributors.splice(index,1);
-    this.contributorsService.updateContributor(this.selectedFeature.contributors, this.selectedFeature.id).toPromise().then(con=>{
+    this.contributorsService.updateFeatureContributors(this.selectedFeature.contributors, this.selectedFeature.id).toPromise().then(con=>{
       console.log("delete a contributor:", con);
       this.contributorForm.reset();
     });
     console.log(this.selectedFeature.contributors[index])
   }
 
-
-
-
-//////////////////////////////////////
-
+  closeContributorDialog(){
+    this.contributorForm.reset();
+    this.contributorDisplay=false;this.contributorForm.reset();    
+  }
 
   openFeature(featureName:string):void{
     this.router.navigate(['/feature/' + featureName]);
