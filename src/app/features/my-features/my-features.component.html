@@ -56,14 +56,14 @@
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Actions</th>
+                    <th class="text-center">Actions</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-sh let-rowIndex="rowIndex">
                 <tr>
                     <td>{{sh.firstName}} {{sh.lastName}}</td>
                     <td>{{sh.email}}</td>
-                    <td>
+                    <td class="text-center">
                         <span class="text-right ml-5">
                             <button (click)="deleteStakeholder(rowIndex)" pButton pRipple type="button" icon="pi pi-trash"
                              class="p-button-rounded p-button-outlined p-button-raised p-button-danger">
