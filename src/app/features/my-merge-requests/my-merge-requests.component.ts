@@ -58,7 +58,7 @@ export class MyMergeRequestsComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = this.stateService.getCurrentUser();
     if (this.currentUser != null){
-      this.loadingService.incrementLoading("Retrieving revisions");
+      this.loadingService.incrementLoading("Retrieving merge requests");
       this.mergeService.getMergeRequestsByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(mergeRequests=>{
         console.log("mergeRequests:", mergeRequests);
         this.mergeRequests = mergeRequests;
@@ -66,7 +66,7 @@ export class MyMergeRequestsComponent implements OnInit {
       }, err=>{
         console.log('err:', err);
         this.loadingService.decrementLoading();
-        this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while retrieving your revisions.  Please try another name.'});
+        this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while retrieving your merge requests.  Please try another name.'});
       });
     }
     this.stakeholderForm = this.createStakeHolderForm();

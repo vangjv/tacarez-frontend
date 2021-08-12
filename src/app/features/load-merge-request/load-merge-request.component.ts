@@ -75,7 +75,9 @@ export class LoadMergeRequestComponent implements OnInit, OnDestroy {
       console.log("oid:", (this.currentUser?.idTokenClaims as OIDToken)?.oid);
       this.isOwnerOrContributor = this.checkIfUserIsContributorOrOwner(this.currentUser,mergeRequest);
       this.geojsonLayer = this.geoJsonHelper.loadGeoJSONLayer(mergeRequest.gitHubRawURL);
+      this.geojsonLayer.title = "Merge changes";
       this.featuregeojsonLayer = this.geoJsonHelper.loadGeoJSONLayer("https://api.tacarez.com/api/geojson/" + this.mergeRequest.featureName);
+      this.featuregeojsonLayer.title = this.mergeRequest.featureName;
       this.doneLoading = true;
       this.loadingService.decrementLoading();
     }, err=>{

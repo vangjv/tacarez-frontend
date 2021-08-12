@@ -135,15 +135,16 @@ export class LoadMergeRequestMap implements OnInit {
      //Legend widget
      const layerList = new LayerList({
       view: this.mapView,
-      listItemCreatedFunction: function(event) {
+      selectionEnabled:true,
+      listItemCreatedFunction: (event)=> {
         const item = event.item;
         if (item.layer.type != "group") {
           // don't show legend twice
           item.panel = {
             content: "legend",
             open: false
-          },
-          item.title = "this.featureName";
+          }
+          // item.title = this.featureName;
         }
       }
     });
@@ -153,11 +154,11 @@ export class LoadMergeRequestMap implements OnInit {
     });
     this.mapView.ui.add(compass, "top-left");
 
-    this.mapView.ui.add(layerList, "bottom-right");
+    this.mapView.ui.add(layerList, "top-right");
 
     //labels
-    this.mapView.ui.add("mergeTitle", "bottom-left");
-    this.mapView.ui.add("originalTitle", "bottom-right");
+    this.mapView.ui.add("mergeTitle", "bottom-right");
+    this.mapView.ui.add("originalTitle", "bottom-left");
     
     // Swipe widget
     const swipe = new Swipe({
