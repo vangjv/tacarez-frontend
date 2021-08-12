@@ -21,6 +21,9 @@ import { NewRevisionRequest } from 'src/app/core/models/new-revision-request.mod
 import { RevisionsService } from 'src/app/core/services/revisions.service';
 import { MergeRequest } from 'src/app/core/models/merge-request.model';
 import Swipe from '@arcgis/core/widgets/Swipe';
+import Compass from '@arcgis/core/widgets/Compass';
+import LayerList from '@arcgis/core/widgets/LayerList';
+import Legend from "@arcgis/core/widgets/Legend";
 
 @Component({
   selector: 'app-load-merge-request-map',
@@ -128,7 +131,14 @@ export class LoadMergeRequestMap implements OnInit {
     };
 
     this.mapView = new MapView(mapViewProperties);
+
+    let compass = new Compass({
+      view: this.mapView
+    });
+    this.mapView.ui.add(compass, "top-left");
+
     this.addSideButtons(this.mapView);
+
     let fieldConfigName:FieldConfig = new FieldConfig( {
       name: "name",
       label: "Name",
@@ -180,8 +190,28 @@ export class LoadMergeRequestMap implements OnInit {
       position: 35, // set position of widget to 35%
       view: this.mapView
     });
-    // add the widget to the view
     this.mapView.ui.add(swipe);
+
+    //Legend widget
+    const layerList = new LayerList({
+      view: this.mapView,
+      listItemCreatedFunction: function(event) {
+        const item = event.item;
+        if (item.layer.type != "group") {
+          // don't show legend twice
+          item.panel = {
+            content: "legend",
+            open: false
+          },
+          item.title = "this.featureName";
+        }
+      }
+    });
+    this.mapView.ui.add(layerList, "bottom-right");
+
+    //labels
+    this.mapView.ui.add("mergeTitle", "bottom-left");
+    this.mapView.ui.add("originalTitle", "bottom-right");
 
     //add editor if map owner or contributor
     if (this.isOwnerOrContributor) {
