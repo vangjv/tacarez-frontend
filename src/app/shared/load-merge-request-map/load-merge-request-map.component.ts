@@ -20,6 +20,7 @@ import { GitHubUser, UpdateFeatureRequest } from 'src/app/core/models/update-fea
 import { NewRevisionRequest } from 'src/app/core/models/new-revision-request.model';
 import { RevisionsService } from 'src/app/core/services/revisions.service';
 import { MergeRequest } from 'src/app/core/models/merge-request.model';
+import Swipe from '@arcgis/core/widgets/Swipe';
 
 @Component({
   selector: 'app-load-merge-request-map',
@@ -33,6 +34,7 @@ export class LoadMergeRequestMap implements OnInit {
   @Input() featureName:string;
   @Input() mergeRequest:MergeRequest;
   @Input() geojsonLayer:GeoJSONLayer;
+  @Input() featuregeojsonLayer:GeoJSONLayer;
   @Input() isOwnerOrContributor:boolean = false;
   map: WebMap;
   mapView: MapView;
@@ -50,6 +52,7 @@ export class LoadMergeRequestMap implements OnInit {
     private authService: MsalService, private revisionService:RevisionsService) { }
 
   ngOnInit() {
+
     //load geojson data
     if(this.geojsonLayer == null || this.geojsonLayer == undefined) {
       this.geoJsonHelper.createBlankPointGeoJsonLayer().then(geoJsonLayer=>{
@@ -113,7 +116,7 @@ export class LoadMergeRequestMap implements OnInit {
   initializeMap(){
     const mapProperties = {
       basemap: 'streets-navigation-vector',
-      layers: [this.geojsonLayer]
+      layers: [this.geojsonLayer, this.featuregeojsonLayer]
     };
 
     this.map = new WebMap(mapProperties);
@@ -169,6 +172,16 @@ export class LoadMergeRequestMap implements OnInit {
         }
       ]
     });
+    
+    // Swipe widget
+    const swipe = new Swipe({
+      leadingLayers: [this.geojsonLayer],
+      trailingLayers: [this.featuregeojsonLayer],
+      position: 35, // set position of widget to 35%
+      view: this.mapView
+    });
+    // add the widget to the view
+    this.mapView.ui.add(swipe);
 
     //add editor if map owner or contributor
     if (this.isOwnerOrContributor) {
