@@ -21,6 +21,7 @@ import { NewRevisionRequest } from 'src/app/core/models/new-revision-request.mod
 import { RevisionsService } from 'src/app/core/services/revisions.service';
 import { MergeRequest } from 'src/app/core/models/merge-request.model';
 import Swipe from '@arcgis/core/widgets/Swipe';
+import { MergeService } from 'src/app/core/services/merge.service';
 
 @Component({
   selector: 'app-load-merge-request-map',
@@ -38,18 +39,16 @@ export class LoadMergeRequestMap implements OnInit {
   @Input() isOwnerOrContributor:boolean = false;
   map: WebMap;
   mapView: MapView;
-  showRevisionDialog: boolean = false;
   saveMapDialog: boolean = false;  
   showShareFeatureDialog: boolean = false;
   showGetDataDialog:boolean = false;
   saveMapForm:FormGroup;
-  revisionForm:FormGroup;
   saving:boolean = false;
   geoJsonURL:string = "";
   mergeRequestURL:string = "";
-  constructor(private geoJsonHelper:GeoJsonHelperService, private stateService:StateService, private featureService:FeatureService,
+  constructor(private geoJsonHelper:GeoJsonHelperService, private stateService:StateService, private mergeService:MergeService,
     private loadingService:LoadingService, private confirmationService: ConfirmationService, private messageService: MessageService,
-    private authService: MsalService, private revisionService:RevisionsService) { }
+    private authService: MsalService) { }
 
   ngOnInit() {
 
@@ -61,7 +60,6 @@ export class LoadMergeRequestMap implements OnInit {
       });    
     }  else {
       this.saveMapForm = this.createSaveMapForm();
-      this.revisionForm = this.createRevisionForm();
       this.initializeMap();
       //set geojsonurl
       this.geoJsonURL = "https://api.tacarez.com/api/geojsonmerge/" + this.featureName + "/" + this.mergeRequest.id;
@@ -76,42 +74,6 @@ export class LoadMergeRequestMap implements OnInit {
     });
   }
 
-  createRevisionForm():FormGroup{
-    return new FormGroup({
-      revisionName: new FormControl(null, [Validators.required]),
-      description: new FormControl(null, [Validators.required])
-    });
-  }
-
-  createRevision(){
-    let currentUser = this.stateService.getCurrentUser();   
-    this.saving = true;
-    this.loadingService.incrementLoading("Creating revision...");
-    let newRevisionRequest:NewRevisionRequest = new NewRevisionRequest();
-    let oidClaims:OIDToken = currentUser?.idTokenClaims as OIDToken;    
-    let owner = new User();
-    owner.email = oidClaims.emails[0];
-    owner.firstName = oidClaims.given_name;
-    owner.lastName = oidClaims.family_name;
-    owner.guid = oidClaims.oid;
-    newRevisionRequest.Owner = owner;
-    newRevisionRequest.featureName = this.featureName;
-    newRevisionRequest.revisionName = this.revisionForm.value.revisionName; 
-    newRevisionRequest.description = this.revisionForm.value.description; 
-    this.revisionService.createRevision(newRevisionRequest).toPromise().then(res=>{
-      console.log("response from new revision request:", res);
-      this.loadingService.decrementLoading();
-      this.messageService.add({severity:'success', summary:'Success', detail:'Your revision was successfully created.'});
-      this.showRevisionDialog = false;
-      this.saving = false;
-      this.revisionForm.reset();
-    }, err=>{
-      this.saving = false;
-      this.loadingService.decrementLoading();
-      console.log("Error from new revision request:", err);
-      this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while trying to create your revision. Please try again.'});      
-    });
-  }
 
   initializeMap(){
     const mapProperties = {
@@ -208,10 +170,6 @@ export class LoadMergeRequestMap implements OnInit {
     });  
   }
 
-  showRevision(){
-    this.showRevisionDialog = true;
-  }
-
   addSideButtons(mapView:MapView){
     let shareFeatureBtn = document.getElementById("shareFeature");
     mapView.ui.add(shareFeatureBtn, "top-left");
@@ -247,50 +205,52 @@ export class LoadMergeRequestMap implements OnInit {
       });
       return;
     }
-    //check for more than one map feature
-    this.geojsonLayer.queryFeatures().then(features=>{ 
-      if (features.features.length > 0) {
-        this.saveMapDialog = true;
-      } else {
-        this.messageService.add({severity:'warn', summary: 'No features to save', detail: 'No features were detected on the map.  Please add a feature before attempting to save.'});
+    this.confirmationService.confirm({
+      message: 'Saves changes while a stakeholder review is in progress will send the updates to all stakeholders.  Do you want to continue saving these changes?',
+      accept: () => {
+        //check for more than one map feature
+        this.geojsonLayer.queryFeatures().then(features=>{ 
+          if (features.features.length > 0) {
+            this.saveMapDialog = true;
+          } else {
+            this.messageService.add({severity:'warn', summary: 'No features to save', detail: 'No features were detected on the map.  Please add a feature before attempting to save.'});
+          }
+        });
       }
     });
+
     
   }
 
   saveChanges(){
-    // let currentUser = this.stateService.getCurrentUser();   
-    // this.saving = true;
-    // this.loadingService.incrementLoading("Saving...");
-    // this.geoJsonHelper.getGeoJsonFromLayer(this.geojsonLayer).then(FeatureCollection=> {
-    //   let encodedGeoJson = btoa(JSON.stringify(FeatureCollection));
-    //   let updateFeatureRequest:UpdateFeatureRequest = new UpdateFeatureRequest();
-    //   let committer:GitHubUser = new GitHubUser();
-    //   let oidClaims:OIDToken = currentUser.idTokenClaims as OIDToken;  
-    //   committer.email = oidClaims.emails[0];
-    //   committer.name = oidClaims.name;
-    //   committer.date = new Date().toDateString();
-    //   updateFeatureRequest.committer = committer;
-    //   updateFeatureRequest.content = encodedGeoJson;
-    //   updateFeatureRequest.message = this.saveMapForm.value.notes;
-    //   this.featureService.updateFeature(updateFeatureRequest, this.featureName, this.revisionName).toPromise().then(res=>{
-    //     this.loadingService.decrementLoading();
-    //     this.messageService.add({severity:'success', summary:'Success', detail:'Your feature was successfully updated.'});
-    //     this.saveMapDialog = false;
-    //     this.saving = false;
-    //     this.saveMapForm.reset();
-    //   }, err=>{
-    //     this.loadingService.decrementLoading();
-    //     console.log("Error from new feature request:", err);
-    //     if (err.error == "A feature with that name already exist") {
-    //       this.messageService.add({severity:'error', summary: 'Error', detail: 'A feature with that name already exist.  Please try another name.'});
-    //     } else {
-    //       this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while saving your feature. Please try again.'});
-    //     }
-    //     this.saving = false;
-    //   });
-    // })
-    // .catch(error => console.warn(error));
+    let currentUser = this.stateService.getCurrentUser();   
+    this.saving = true;
+    this.loadingService.incrementLoading("Saving...");
+    this.geoJsonHelper.getGeoJsonFromLayer(this.geojsonLayer).then(FeatureCollection=> {
+      let encodedGeoJson = btoa(JSON.stringify(FeatureCollection));
+      let updateFeatureRequest:UpdateFeatureRequest = new UpdateFeatureRequest();
+      let committer:GitHubUser = new GitHubUser();
+      let oidClaims:OIDToken = currentUser.idTokenClaims as OIDToken;  
+      committer.email = oidClaims.emails[0];
+      committer.name = oidClaims.name;
+      committer.date = new Date().toDateString();
+      updateFeatureRequest.committer = committer;
+      updateFeatureRequest.content = encodedGeoJson;
+      updateFeatureRequest.message = this.saveMapForm.value.notes;
+      this.mergeService.updateMergeRequest(updateFeatureRequest, this.mergeRequest.featureName, this.mergeRequest.id).toPromise().then(res=>{
+        this.loadingService.decrementLoading();
+        this.messageService.add({severity:'success', summary:'Success', detail:'The merge request was successfully updated.'});
+        this.saveMapDialog = false;
+        this.saving = false;
+        this.saveMapForm.reset();
+      }, err=>{
+        this.loadingService.decrementLoading();
+        console.log("Error while trying to update merge request:", err);
+        this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while saving your feature. Please try again.'});
+        this.saving = false;
+      });
+    })
+    .catch(error => console.warn(error));
   }
 
   copyGeoJsonURLToClipBoard(){
