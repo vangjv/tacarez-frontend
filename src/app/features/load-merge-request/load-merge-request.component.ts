@@ -23,6 +23,7 @@ export class LoadMergeRequestComponent implements OnInit, OnDestroy {
   hash:string;
   routeSub:Subscription;
   geojsonLayer:GeoJSONLayer;
+  featuregeojsonLayer:GeoJSONLayer;
   doneLoading:boolean = false;
   isOwnerOrContributor:boolean = false;
   currentUser:AccountInfo;
@@ -74,6 +75,7 @@ export class LoadMergeRequestComponent implements OnInit, OnDestroy {
       console.log("oid:", (this.currentUser?.idTokenClaims as OIDToken)?.oid);
       this.isOwnerOrContributor = this.checkIfUserIsContributorOrOwner(this.currentUser,mergeRequest);
       this.geojsonLayer = this.geoJsonHelper.loadGeoJSONLayer(mergeRequest.gitHubRawURL);
+      this.featuregeojsonLayer = this.geoJsonHelper.loadGeoJSONLayer("https://api.tacarez.com/api/geojson/" + this.mergeRequest.featureName);
       this.doneLoading = true;
       this.loadingService.decrementLoading();
     }, err=>{
