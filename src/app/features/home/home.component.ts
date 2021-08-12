@@ -11,5 +11,9 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  
+  toDevPost(){
+    window.open("https://devpost.com/software/top-secret-to-be-filled-out-later", "_blank");    
+  }
 
 }

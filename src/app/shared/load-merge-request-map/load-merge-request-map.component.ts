@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { arcgisToGeoJSON } from "@terraformer/arcgis"
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
@@ -11,14 +10,10 @@ import { GeoJsonHelperService } from 'src/app/core/services/geo-json-helper.serv
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { StateService } from 'src/app/core/services/state.service';
 import { OIDToken } from 'src/app/core/models/id-token.model';
-import { User } from 'src/app/core/models/user.model';
-import { FeatureService } from 'src/app/core/services/feature.service';
 import { LoadingService } from 'src/app/core/loadingspinner/loading-spinner/loading.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { MsalService } from '@azure/msal-angular';
 import { GitHubUser, UpdateFeatureRequest } from 'src/app/core/models/update-feature-request.model';
-import { NewRevisionRequest } from 'src/app/core/models/new-revision-request.model';
-import { RevisionsService } from 'src/app/core/services/revisions.service';
 import { MergeRequest } from 'src/app/core/models/merge-request.model';
 import Swipe from '@arcgis/core/widgets/Swipe';
 import { MergeService } from 'src/app/core/services/merge.service';
@@ -137,10 +132,11 @@ export class LoadMergeRequestMap implements OnInit {
     
     // Swipe widget
     const swipe = new Swipe({
-      leadingLayers: [this.geojsonLayer],
-      trailingLayers: [this.featuregeojsonLayer],
-      position: 35, // set position of widget to 35%
-      view: this.mapView
+      leadingLayers: [this.featuregeojsonLayer],
+      trailingLayers: [this.geojsonLayer],
+      position: 50, // set position of widget to 35%
+      view: this.mapView,
+      dragLabel: "Drag slicer to compare current feature map on the left to the merge changes on the right."
     });
     // add the widget to the view
     this.mapView.ui.add(swipe);
