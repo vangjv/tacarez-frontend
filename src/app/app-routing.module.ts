@@ -13,8 +13,13 @@ import { AllFeaturesComponent } from './features/all-features/all-features.compo
 import { MyMergeRequestsComponent } from './features/my-merge-requests/my-merge-requests.component';
 import { MsalGuard } from '@azure/msal-angular';
 import { LoadMergeRequestComponent } from './features/load-merge-request/load-merge-request.component';
+import { ScreenShotViewerComponent } from './features/screen-shot-viewer/screen-shot-viewer.component';
 
 const routes: Routes = [
+  {
+    path: 'screenshot/:featureName/:mergeId', 
+    component: ScreenShotViewerComponent
+  },
   {
     path: '', component: AppMainComponent,
     children: [

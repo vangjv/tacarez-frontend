@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { MergeRequestRequest } from '../models/merge-request-request.model';
 import { MergeRequest } from '../models/merge-request.model';
 import { NewRevisionRequest } from '../models/new-revision-request.model';
+import { UpdateFeatureRequest } from '../models/update-feature-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,4 +25,7 @@ export class MergeService {
     return this.httpClient.get<MergeRequest>(this.apiEndpoint + "/api/mergerequest/feature/" + featureName + "/" + mergeId);
   }
 
+  updateMergeRequest(updateFeatureRequest:UpdateFeatureRequest, featureName:string, mergeId:string){
+    return this.httpClient.put<MergeRequest>(this.apiEndpoint + "/api/mergerequest/feature/" + featureName + "/" + mergeId, updateFeatureRequest);
+  }
 }

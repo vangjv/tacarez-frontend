@@ -59,6 +59,9 @@ import { MergeService } from './core/services/merge.service';
 import { MyMergeRequestsComponent } from './features/my-merge-requests/my-merge-requests.component';
 import { LoadMergeRequestComponent } from './features/load-merge-request/load-merge-request.component';
 import { LoadMergeRequestMap } from './shared/load-merge-request-map/load-merge-request-map.component';
+import { CacheInterceptor } from './core/services/cache.interceptor';
+import { ScreenShotViewerComponent } from './features/screen-shot-viewer/screen-shot-viewer.component';
+import { ScreenShotMap } from './shared/screenshot-map/screenshot-map.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -134,7 +137,9 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     AllFeaturesComponent,
     MyMergeRequestsComponent,
     LoadMergeRequestComponent,
-    LoadMergeRequestMap
+    LoadMergeRequestMap,
+    ScreenShotViewerComponent,
+    ScreenShotMap
   ],
   imports: [
     BrowserModule,
@@ -167,7 +172,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   providers: [
     // {
     //   provide: HTTP_INTERCEPTORS,
-    //   useClass: MsalInterceptor,
+    //   useClass: CacheInterceptor,
+    //   // useClass: MsalInterceptor,
     //   multi: true
     // },
     {
