@@ -1,0 +1,9 @@
+/* import the required JSAPI css */
+@import 'https://js.arcgis.com/4.20/esri/themes/light/main.css';
+:host {
+  height:100%;
+}
+/* https://github.com/Esri/angular-cli-esri-map/issues/66 */
+.esri-view {
+  height: calc(100vh); 
+}
