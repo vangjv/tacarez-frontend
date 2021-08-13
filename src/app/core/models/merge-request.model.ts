@@ -18,10 +18,17 @@ export class MergeRequest {
 
 export class StakeholderReview {
     public envelopeId?: string;
+    public envelopeStatus?: RecipientStatus[];
     public status?: string;
     public createdDate?: Date;
     public stakeholders?: User[];
 }
 
-
+export class RecipientStatus {
+    public recipientName?: string;
+    public email?: string;
+    public initialSentDateTime?: string;
+    public deliveredDateTime?: string;
+    public signedDateTime?: string;
+}
 
