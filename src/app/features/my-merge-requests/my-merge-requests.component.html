@@ -86,7 +86,11 @@
                                 </span>
                                 <span class="pr-2 pl-2">
                                     <button pButton pRipple type="button" icon="far fa-thumbs-up" 
-                                        class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Approve merge" tooltipPosition="top"></button>
+                                        class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Approve merge" tooltipPosition="top" (click)="approveRequest(merge)"></button>
+                                </span>
+                                <span class="pr-2 pl-2">
+                                    <button pButton pRipple type="button" icon="far fa-thumbs-down" 
+                                        class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Deny merge" tooltipPosition="top" (click)="denyRequest(merge)"></button>
                                 </span>
                             </td>
                         </tr>

@@ -247,4 +247,23 @@ showContributorDialog(mergeRequest:MergeRequest) {
     });
   }
 
+  approveRequest(merge:MergeRequest) {
+    this.confirmationService.confirm({
+      header: "Please confirm your action",
+      message: 'Are you sure that you want to approve this merge request?  This will merge these changes into your map feature',
+      accept: () => {
+          //Actual logic to perform a confirmation
+      }
+    });
+  }
+
+  denyRequest(merge:MergeRequest) {
+    this.confirmationService.confirm({
+      header: "Please confirm your action",
+      message: 'Are you sure that you want to deny this merge request?',
+      accept: () => {
+          //Actual logic to perform a confirmation
+      }
+    });
+  }
 }

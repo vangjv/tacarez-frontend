@@ -82,9 +82,9 @@ export class AppMenuComponent implements OnInit, OnDestroy {
                         this.showOpenFeature = true;
                     }
                 },
-                {
-                    label: 'Recent',  routerLink: ['/recent']
-                },
+                // {
+                //     label: 'Recent',  routerLink: ['/recent']
+                // },
                 {
                     label: 'Explore',  routerLink: ['/explore']
                 }
