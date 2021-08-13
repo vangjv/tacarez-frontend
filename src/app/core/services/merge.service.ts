@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { MergeAction } from '../models/merge-action.model';
 import { MergeRequestRequest } from '../models/merge-request-request.model';
 import { MergeRequest } from '../models/merge-request.model';
 import { NewRevisionRequest } from '../models/new-revision-request.model';
@@ -27,5 +28,9 @@ export class MergeService {
 
   updateMergeRequest(updateFeatureRequest:UpdateFeatureRequest, featureName:string, mergeId:string){
     return this.httpClient.put<MergeRequest>(this.apiEndpoint + "/api/mergerequest/feature/" + featureName + "/" + mergeId, updateFeatureRequest);
+  }
+
+  createMergeAction(mergeAction:MergeAction) {
+    return this.httpClient.post<MergeRequest>(this.apiEndpoint + "/api/merge", mergeAction);
   }
 }

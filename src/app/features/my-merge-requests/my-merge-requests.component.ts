@@ -5,6 +5,7 @@ import { AccountInfo } from '@azure/msal-browser';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { LoadingService } from 'src/app/core/loadingspinner/loading-spinner/loading.service';
 import { OIDToken } from 'src/app/core/models/id-token.model';
+import { MergeAction } from 'src/app/core/models/merge-action.model';
 import { MergeRequestRequest } from 'src/app/core/models/merge-request-request.model';
 import { MergeRequest, StakeholderReview } from 'src/app/core/models/merge-request.model';
 import { Revision } from 'src/app/core/models/revision.model';
@@ -78,7 +79,7 @@ export class MyMergeRequestsComponent implements OnInit {
       this.mergeRequests.forEach(mr=>{
         if(mr.stakeholderReview?.envelopeId == null || mr.stakeholderReview?.envelopeId == undefined) {
           this.reviewNotStartedMergeRequests.push(mr);
-        } else if (mr.stakeholderReview?.status == "Approved" || mr.stakeholderReview?.status == "Denied") {
+        } else if (mr.status == "Approved" || mr.status == "Denied") {
           this.completedMergeRequests.push(mr);
         } else {
           this.inProgressMergeRequests.push(mr);
@@ -236,7 +237,8 @@ showContributorDialog(mergeRequest:MergeRequest) {
     console.log("stakeholderReviewRequst", stakeholderReviewRequst);
     this.stakeholderReviewService.sendStakeholderReviewRequest(stakeholderReviewRequst).toPromise().then(mergeRequest=>{
       console.log("Merge request:", mergeRequest);
-      this.getMergeRequests();
+      //this.getMergeRequests();
+      this.moveMergeRequest(this.selectedMergeRequest, this.reviewNotStartedMergeRequests, this.inProgressMergeRequests);
       this.messageToReviewers = "";
       this.showStakeholderReviewDialog = false;
       this.messageService.add({severity:'success', summary:'Success', detail:'Your request for stakeholder review has been successfully processed.'});
@@ -252,7 +254,18 @@ showContributorDialog(mergeRequest:MergeRequest) {
       header: "Please confirm your action",
       message: 'Are you sure that you want to approve this merge request?  This will merge these changes into your map feature',
       accept: () => {
-          //Actual logic to perform a confirmation
+        this.loadingService.incrementLoading("Performing merge");
+        //create merge action
+        let mergeAction = new MergeAction(merge.id,"approve");
+        this.mergeService.createMergeAction(mergeAction).toPromise().then(updatedMergeRequest =>{
+          console.log("updatedMergeRequest:", updatedMergeRequest);
+          this.moveMergeRequest(merge,this.inProgressMergeRequests, this.completedMergeRequests);
+          this.loadingService.decrementLoading();
+        }, err=>{
+          console.log("Error while performing merge approval:", err);
+          this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while performing the merge approval.  Please try again.'});
+          this.loadingService.decrementLoading();
+        });
       }
     });
   }
@@ -262,8 +275,33 @@ showContributorDialog(mergeRequest:MergeRequest) {
       header: "Please confirm your action",
       message: 'Are you sure that you want to deny this merge request?',
       accept: () => {
-          //Actual logic to perform a confirmation
+        this.loadingService.incrementLoading("Performing merge");
+        //create merge action
+        let mergeAction = new MergeAction(merge.id,"deny");
+        this.mergeService.createMergeAction(mergeAction).toPromise().then(updatedMergeRequest =>{
+          console.log("updatedMergeRequest:", updatedMergeRequest); 
+          this.moveMergeRequest(merge,this.inProgressMergeRequests, this.completedMergeRequests);
+          this.loadingService.decrementLoading();
+        }, err=>{
+          console.log("Error while performing merge action:", err);
+          this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while performing the merge action.  Please try again.'});
+          this.loadingService.decrementLoading();
+        });
       }
     });
   }
+
+  //this is needed because the new changes take a few seconds before they are returned back
+  //this moves the mergeRequest to reflect changes before they are return
+  moveMergeRequest(mergeRequest:MergeRequest, from:MergeRequest[], to:MergeRequest[]):void {
+    for (var i = 0; i < from.length; i++) {
+      var element = from[i];
+      if (mergeRequest.id == element.id) {
+          from.splice(i, 1);
+          to.push(element);
+          i--;
+      }
+    };
+  }
+
 }

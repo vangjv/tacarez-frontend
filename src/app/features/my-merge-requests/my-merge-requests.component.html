@@ -122,16 +122,12 @@
                                     class="p-button-rounded p-button-outlined p-button-raised" pTooltip="View notes" tooltipPosition="top" (click)="openNotes(merge)"></button>
                                 </span>
                             </td>
-                            <td>{{merge.stakeholderReview.status  ?? "Review not started"}}</td>
+                            <td>{{merge.status}}</td>
                             <td>{{merge.createdDate | date :'short' }}</td>
                             <td class="text-center">
                                 <span class="pr-2 pl-2">
                                     <button pButton pRipple type="button" icon="fas fa-search" 
                                     class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Open/View" tooltipPosition="top" (click)="reviewMergeMap(merge.featureName, merge.id)"></button>
-                                </span>
-                                <span class="pr-2 pl-2">
-                                    <button pButton pRipple type="button" icon="fas fa-user-plus" 
-                                    class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Contributors" tooltipPosition="top" (click)="showContributorDialog(merge)"></button>
                                 </span>
                             </td>
                         </tr>

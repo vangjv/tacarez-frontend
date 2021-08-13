@@ -7,6 +7,7 @@ export class MergeRequest {
     revisionName: string;
     gitHubRawURL: string;
     owner: User;
+    status: string;
     mergeRequester: User;
     mergeRequesterNotes?: string;
     contributors?: User[];
