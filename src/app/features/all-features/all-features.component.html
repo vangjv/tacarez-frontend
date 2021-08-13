@@ -2,14 +2,17 @@
     <div class="col-12 md:col-6 lg:col-9 mx-auto">
         <div>
             <h1>Explore features</h1>
-            <p-table [value]="features">
+            <p-table [value]="features" [paginator]="true" [rows]="10" [showCurrentPageReport]="true" 
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]">
+                <ng-template pTemplate="caption">
+                </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Name</th>
                         <th>Description</th>
                         <th>Tags</th>
                         <th style="width: 15%;">Last Modified</th>
-                        <th style="width: 5%;" class="text-center">View</th>
+                        <th style="width: 5%;" class="text-center pr-2 pl-2">View</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-ft>
@@ -19,7 +22,7 @@
                         <td>{{ft.tags?.join(", ")}}</td>
                         <td>{{ft.lastModifiedDate | date :'short' }}</td>
                         <td class="text-center">
-                            <span class="pr-2 pl-2">
+                            <span class="">
                                 <button pButton pRipple type="button" icon="fas fa-search" 
                                 class="p-button-rounded p-button-outlined p-button-raised" pTooltip="Open/View" tooltipPosition="top" (click)="openFeature(ft.id)"></button>
                             </span>
