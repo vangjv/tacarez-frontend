@@ -241,6 +241,7 @@ showContributorDialog(mergeRequest:MergeRequest) {
       this.moveMergeRequest(this.selectedMergeRequest, this.reviewNotStartedMergeRequests, this.inProgressMergeRequests);
       this.messageToReviewers = "";
       this.showStakeholderReviewDialog = false;
+      this.loadingService.decrementLoading();
       this.messageService.add({severity:'success', summary:'Success', detail:'Your request for stakeholder review has been successfully processed.'});
     }, err=>{
       console.log("Error:", err);
