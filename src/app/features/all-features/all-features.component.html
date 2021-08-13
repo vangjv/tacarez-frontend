@@ -4,8 +4,6 @@
             <h1>Explore features</h1>
             <p-table [value]="features" [paginator]="true" [rows]="10" [showCurrentPageReport]="true" 
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]">
-                <ng-template pTemplate="caption">
-                </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Name</th>

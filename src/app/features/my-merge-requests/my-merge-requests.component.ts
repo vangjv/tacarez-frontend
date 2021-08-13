@@ -55,6 +55,7 @@ export class MyMergeRequestsComponent implements OnInit {
   reviewNotStartedMergeRequests:MergeRequest[]=[];
   inProgressMergeRequests:MergeRequest[]=[];
   completedMergeRequests:MergeRequest[]=[];
+  showRecipientStatusModal:boolean = false;
   constructor(private confirmationService: ConfirmationService,  private messageService: MessageService,
     private stateService:StateService, private loadingService:LoadingService,
     private router:Router, private mergeService:MergeService, private contributorsService:ContributorsService,
@@ -303,6 +304,11 @@ showContributorDialog(mergeRequest:MergeRequest) {
           i--;
       }
     };
+  }
+
+  openRecipientStatus(merge:MergeRequest){
+    this.selectedMergeRequest = merge;
+    this.showRecipientStatusModal = true;
   }
 
 }
