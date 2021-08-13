@@ -51,6 +51,9 @@ export class MyMergeRequestsComponent implements OnInit {
   saving: boolean = false;
   contributorDisplay:boolean = false;;
   messageToReviewers:string = "";
+  reviewNotStartedMergeRequests:MergeRequest[]=[];
+  inProgressMergeRequests:MergeRequest[]=[];
+  completedMergeRequests:MergeRequest[]=[];
   constructor(private confirmationService: ConfirmationService,  private messageService: MessageService,
     private stateService:StateService, private loadingService:LoadingService,
     private router:Router, private mergeService:MergeService, private contributorsService:ContributorsService,
@@ -61,18 +64,32 @@ export class MyMergeRequestsComponent implements OnInit {
     this.currentUser = this.stateService.getCurrentUser();
     if (this.currentUser != null){
       this.loadingService.incrementLoading("Retrieving merge requests");
-      this.mergeService.getMergeRequestsByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(mergeRequests=>{
-        console.log("mergeRequests:", mergeRequests);
-        this.mergeRequests = mergeRequests;
-        this.loadingService.decrementLoading();
-      }, err=>{
-        console.log('err:', err);
-        this.loadingService.decrementLoading();
-        this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while retrieving your merge requests.  Please try another name.'});
-      });
+      this.getMergeRequests();
     }
     this.stakeholderForm = this.createStakeHolderForm();
     this.contributorForm = this.createContributorFormGroup();
+  }
+
+  getMergeRequests(){
+    this.mergeService.getMergeRequestsByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(mergeRequests=>{
+      console.log("mergeRequests:", mergeRequests);
+      this.mergeRequests = mergeRequests;
+      //move merge requests to bins
+      this.mergeRequests.forEach(mr=>{
+        if(mr.stakeholderReview?.envelopeId == null || mr.stakeholderReview?.envelopeId == undefined) {
+          this.reviewNotStartedMergeRequests.push(mr);
+        } else if (mr.stakeholderReview?.status == "Approved" || mr.stakeholderReview?.status == "Denied") {
+          this.completedMergeRequests.push(mr);
+        } else {
+          this.inProgressMergeRequests.push(mr);
+        }
+      })
+      this.loadingService.decrementLoading();
+    }, err=>{
+      console.log('err:', err);
+      this.loadingService.decrementLoading();
+      this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while retrieving your merge requests.  Please try another name.'});
+    });
   }
 
   createStakeHolderForm(){
@@ -174,7 +191,6 @@ showContributorDialog(mergeRequest:MergeRequest) {
     } 
     let addContributor = new User();
     addContributor.email = this.contributorForm.value.email;
-
     this.selectedMergeRequest.contributors.push(addContributor);
     this.contributorsService.updateMergeRequestContributors(this.selectedMergeRequest.contributors, this.selectedMergeRequest.featureName,
       this.selectedMergeRequest.id).toPromise().then(con=>{
@@ -220,24 +236,15 @@ showContributorDialog(mergeRequest:MergeRequest) {
     console.log("stakeholderReviewRequst", stakeholderReviewRequst);
     this.stakeholderReviewService.sendStakeholderReviewRequest(stakeholderReviewRequst).toPromise().then(mergeRequest=>{
       console.log("Merge request:", mergeRequest);
-      this.mergeService.getMergeRequestsByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(mergeRequests=>{
-        console.log("mergeRequests:", mergeRequests);
-        this.mergeRequests = mergeRequests;
-        this.messageToReviewers = "";
-        this.showStakeholderReviewDialog = false;
-        this.messageService.add({severity:'success', summary:'Success', detail:'Your request for stakeholder review has been successfully processed.'});
-        this.loadingService.decrementLoading();
-      }, err=>{
-        console.log('err:', err);
-        this.loadingService.decrementLoading();
-        this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while retrieving your merge requests.  Please try another name.'});
-      });      
+      this.getMergeRequests();
+      this.messageToReviewers = "";
+      this.showStakeholderReviewDialog = false;
+      this.messageService.add({severity:'success', summary:'Success', detail:'Your request for stakeholder review has been successfully processed.'});
     }, err=>{
       console.log("Error:", err);
       this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while processing your stakeholder review request.  Please try again.'});
       this.loadingService.decrementLoading();
-    })
-
+    });
   }
 
 }

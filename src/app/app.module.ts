@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { EsriMapComponent } from './shared/esri-map/esri-map.component';
 import { NewEsriMapComponent } from './shared/new-esri-map/new-esri-map.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-
 import {AppMainComponent} from './app.main.component';
 import {AppTopBarComponent} from './app.topbar.component';
 import {AppConfigComponent} from './app.config.component';
@@ -23,6 +21,8 @@ import {InputTextModule} from 'primeng/inputtext';
 import {MenuModule} from 'primeng/menu';
 import {ToastModule} from 'primeng/toast';
 import {ChipsModule} from 'primeng/chips';
+import {TabViewModule} from 'primeng/tabview';
+import {CardModule} from 'primeng/card';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -39,8 +39,6 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {TooltipModule} from 'primeng/tooltip';
 import {MergeRequestComponent} from './features/merge-request/merge-request.component';
-
-
 
 // Azure B2C
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
@@ -59,7 +57,6 @@ import { MergeService } from './core/services/merge.service';
 import { MyMergeRequestsComponent } from './features/my-merge-requests/my-merge-requests.component';
 import { LoadMergeRequestComponent } from './features/load-merge-request/load-merge-request.component';
 import { LoadMergeRequestMap } from './shared/load-merge-request-map/load-merge-request-map.component';
-import { CacheInterceptor } from './core/services/cache.interceptor';
 import { ScreenShotViewerComponent } from './features/screen-shot-viewer/screen-shot-viewer.component';
 import { ScreenShotMap } from './shared/screenshot-map/screenshot-map.component';
 import { StakeholderReviewService } from './core/services/stakeholder-review.service';
@@ -168,7 +165,9 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     InputTextModule,
     MenuModule,
     ToastModule,
-    ChipsModule
+    ChipsModule,
+    TabViewModule,
+    CardModule
   ],
   providers: [
     // {
