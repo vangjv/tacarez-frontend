@@ -1,6 +1,8 @@
 ## TacarEZ
 
 ## Introduction
+For more background on the inspiration for this application, please visit [please excuse about weird url.  the project was created before we had a name :) ]
+https://devpost.com/software/top-secret-to-be-filled-out-later
 
 This application provides a user experience to help map data using ArcGIS javascript API.  There is also an approval workflow built in that lets users save changes and send them to stakeholders for approval.  Behind the scenes the map data is being version controlled in a public Github repository.  To see the features in Github, visit: https://github.com/dshackathon?tab=repositories.  From there you can explore the commit history and even look at recent instances of the map.  Github has an integration where it displays visually the geojson map data.  In the future, we would like to be able to explore exposing and loading previous commit data as history and display the commit notes.  It would be great to build a timeline to see the changes to a map over time.
 
