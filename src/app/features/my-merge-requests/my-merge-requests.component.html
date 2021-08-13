@@ -94,7 +94,7 @@
                 </td>
                 <td>
                     <span class="text-right ml-5">
-                        <button pButton pRipple type="button" icon="pi pi-trash"
+                        <button pButton pRipple type="button" icon="pi pi-trash" (click)="removeStakeholder(i)"
                             class="p-button-rounded p-button-outlined p-button-raised p-button-danger">
                         </button>
                     </span>
@@ -131,7 +131,7 @@
         </form>
         <div class="field" class="text-left mt-3 mb-3">
             <label for="messageToReviewers" class="mb-3" style="font-weight: 600;color: #495057;">Message to reviewers:</label>
-            <textarea pInputTextarea rows="8" style="resize:none" class="w-full"></textarea>
+            <textarea pInputTextarea rows="8" style="resize:none" [(ngModel)]="messageToReviewers" class="w-full"></textarea>
         </div>
         <div class="flex justify-content-between">
             <button pButton type="button" class="p-button-secondary" label="Cancel" (click)="cancelStakeholderReview()"></button>

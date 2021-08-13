@@ -62,6 +62,7 @@ import { LoadMergeRequestMap } from './shared/load-merge-request-map/load-merge-
 import { CacheInterceptor } from './core/services/cache.interceptor';
 import { ScreenShotViewerComponent } from './features/screen-shot-viewer/screen-shot-viewer.component';
 import { ScreenShotMap } from './shared/screenshot-map/screenshot-map.component';
+import { StakeholderReviewService } from './core/services/stakeholder-review.service';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -196,7 +197,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     ConfirmationService,
     MessageService,
     LoadingService,
-    MergeService
+    MergeService,
+    StakeholderReviewService
   ],
   bootstrap: [AppComponent, MsalRedirectComponent]
 })

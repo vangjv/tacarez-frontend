@@ -8,10 +8,11 @@ import { OIDToken } from 'src/app/core/models/id-token.model';
 import { MergeRequestRequest } from 'src/app/core/models/merge-request-request.model';
 import { MergeRequest, StakeholderReview } from 'src/app/core/models/merge-request.model';
 import { Revision } from 'src/app/core/models/revision.model';
+import { StakeholderReviewRequest } from 'src/app/core/models/stakeholder-review-request.model';
 import { User } from 'src/app/core/models/user.model';
 import { ContributorsService } from 'src/app/core/services/contributors.service';
 import { MergeService } from 'src/app/core/services/merge.service';
-import { RevisionsService } from 'src/app/core/services/revisions.service';
+import { StakeholderReviewService } from 'src/app/core/services/stakeholder-review.service';
 import { StateService } from 'src/app/core/services/state.service';
 
 @Component({
@@ -49,10 +50,11 @@ export class MyMergeRequestsComponent implements OnInit {
   contributorForm: FormGroup;
   saving: boolean = false;
   contributorDisplay:boolean = false;;
-
+  messageToReviewers:string = "";
   constructor(private confirmationService: ConfirmationService,  private messageService: MessageService,
     private stateService:StateService, private loadingService:LoadingService,
-    private router:Router, private mergeService:MergeService, private contributorsService:ContributorsService ) {}
+    private router:Router, private mergeService:MergeService, private contributorsService:ContributorsService,
+    private stakeholderReviewService:StakeholderReviewService ) {}
 
   
   ngOnInit(): void {
@@ -200,8 +202,42 @@ showContributorDialog(mergeRequest:MergeRequest) {
     this.showStakeholderReviewDialog = false;
     this.contributorForm.reset();
   }
+
+  removeStakeholder(rowIndex:number){
+    console.log("rowIndex:", rowIndex);
+    this.selectedMergeRequest?.stakeholderReview?.stakeholders?.splice(rowIndex,1);
+  }
+
   sendReviewRequest(){
-    console.log("this.selectedMergeRequest:", this.selectedMergeRequest);
+    //generate request
+    this.loadingService.incrementLoading("Generating data and sending envelopes.  This may take a few seconds.");
+    let stakeholderReviewRequst:StakeholderReviewRequest = {
+      "mergeId": this.selectedMergeRequest.id,
+      "senderName" : this.currentUser.name,
+      "messageFromSender" : this.messageToReviewers,
+      "stakeholders" : this.selectedMergeRequest.stakeholderReview.stakeholders
+    }
+    console.log("stakeholderReviewRequst", stakeholderReviewRequst);
+    this.stakeholderReviewService.sendStakeholderReviewRequest(stakeholderReviewRequst).toPromise().then(mergeRequest=>{
+      console.log("Merge request:", mergeRequest);
+      this.mergeService.getMergeRequestsByUser((this.currentUser?.idTokenClaims as OIDToken).oid).toPromise().then(mergeRequests=>{
+        console.log("mergeRequests:", mergeRequests);
+        this.mergeRequests = mergeRequests;
+        this.messageToReviewers = "";
+        this.showStakeholderReviewDialog = false;
+        this.messageService.add({severity:'success', summary:'Success', detail:'Your request for stakeholder review has been successfully processed.'});
+        this.loadingService.decrementLoading();
+      }, err=>{
+        console.log('err:', err);
+        this.loadingService.decrementLoading();
+        this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while retrieving your merge requests.  Please try another name.'});
+      });      
+    }, err=>{
+      console.log("Error:", err);
+      this.messageService.add({severity:'error', summary: 'Error', detail: 'An error occurred while processing your stakeholder review request.  Please try again.'});
+      this.loadingService.decrementLoading();
+    })
+
   }
 
 }
