@@ -7,6 +7,7 @@ import { MenuItem } from 'primeng/api';
 import { Menu } from 'primeng/menu';
 import { StateService } from './core/services/state.service';
 import { AccountInfo } from '@azure/msal-browser';
+import { Router } from '@angular/router';
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html'
@@ -21,7 +22,7 @@ export class AppTopBarComponent implements OnInit, OnDestroy{
     userSubscription:Subscription;
 
     constructor(public breadcrumbService: BreadcrumbService, public app: AppComponent, public appMain: AppMainComponent,
-        private stateService:StateService) {
+        private stateService:StateService, private router:Router) {
         this.subscription = breadcrumbService.itemsHandler.subscribe(response => {
             this.items = response;
         });
@@ -80,5 +81,9 @@ export class AppTopBarComponent implements OnInit, OnDestroy{
 
     logout() {
         this.app.logout();
+    }
+
+    gotoHome(){
+        this.router.navigate(["/"]);
     }
 }
